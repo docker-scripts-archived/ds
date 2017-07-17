@@ -1,0 +1,8 @@
+cmd_info() {
+    cat <<_EOF
+SRC='$SRC'
+IMAGE='$IMAGE'
+CONTAINER='$CONTAINER'
+PORTS='$PORTS'
+_EOF
+}

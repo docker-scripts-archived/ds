@@ -1,0 +1,104 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "DS" "1" "July 2017" "dashohoxha" "DockerScripts"
+.
+.SH "NAME"
+\fBds\fR \- Docker Scripts
+.
+.SH "SYNOPSIS"
+\fBds\fR \fICOMMAND\fR
+.
+.SH "DESCRIPTION"
+DockerScripts is a shell script framework for Docker which simplifies managing containers in a context\. Each container is like a virtual machine that has an application installed inside\. Each container has a base directory where the settings of the container are stored (in the file \fIsettings\.sh\fR)\. The command \fBds\fR picks the parameters that it needs from the file \fIsettings\.sh\fR in the current directory\.
+.
+.SH "COMMANDS"
+.
+.IP "\(bu" 4
+\fBinit\fR \fI\fIsrc_dir\fR\fR, \fBinfo\fR
+.
+.IP
+Initialize a working directory by getting the file \fIsettings\.sh\fR from the given source directory\. Show some of the current settings\.
+.
+.IP "\(bu" 4
+\fBbuild\fR, \fBcreate\fR, \fBconfig\fR
+.
+.IP
+Build the image, create the container, and configure the guest system inside the container\.
+.
+.IP "\(bu" 4
+\fBstart\fR, \fBstop\fR, \fBrestart\fR
+.
+.IP
+Start, stop and restart the container\.
+.
+.IP "\(bu" 4
+\fBshell\fR
+.
+.IP
+Get a shell on the container\.
+.
+.IP "\(bu" 4
+\fBexec\fR
+.
+.IP
+Execute a command inside the container\.
+.
+.IP "\(bu" 4
+\fBsnapshot\fR
+.
+.IP
+Make a snapshot of the container\.
+.
+.IP "\(bu" 4
+\fBremove\fR
+.
+.IP
+Remove the container and the image\.
+.
+.IP "\(bu" 4
+\fBhelp\fR
+.
+.IP
+Display a help message\.
+.
+.IP "" 0
+.
+.SH "FILES"
+\fB\./settings\.sh\fR
+.
+.IP "" 4
+.
+.nf
+
+      It is located in directory of the container and keeps
+      the settings of the container and the application installed
+      inside it\.
+.
+.fi
+.
+.IP "" 0
+.
+.SH "CUSTOMIZATION"
+The file \fB$SRC/ds\.sh\fR or \fB\./ds\.sh\fR can be used to redefine and customize some functions, without having to touch the code of the main script\. Also, custom commands can be defined for each container by adding the file \fB\./cmd/command\.sh\fR, which contains the function \fBcmd_command() { \. \. \. }\fR\.
+.
+.SH "INSTALLATION"
+user@laptop:~$ \fBgit clone https://github\.com/docker\-scripts/ds\fR user@laptop:~$ \fBcd ds/\fR user@laptop:~$ \fBsudo make install\fR user@laptop:~$ \fBds help\fR
+.
+.SH "USAGE"
+Some examples of using \fBds\fR are shown below\.
+.
+.SS "Installing Moodle"
+user@laptop:~# \fBgit clone https://github\.com/docker\-scripts/moodle /usr/local/src/moodle\fR user@laptop:~# \fBmkdir \-p /var/containers/moodle1\fR user@laptop:~# \fBcd /var/containers/moodle1/\fR user@laptop:~# \fBds init /usr/local/src/moodle\fR user@laptop:~# \fBvim settings\.sh\fR user@laptop:~# \fBds build\fR user@laptop:~# \fBds create\fR user@laptop:~# \fBds config\fR user@laptop:~# \fBds shell\fR
+.
+.SH "AUTHOR"
+Copyright (C) 2017 Dashamir Hoxha (dashohoxha@gmail\.com)\. The code is on GitHub at \fIhttps://github\.com/dashohoxha/ds\fR\.
+.
+.SH "COPYLEFT"
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\.
+.
+.P
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\. See the GNU General Public License for more details\.
+.
+.P
+You should have received a copy of the GNU General Public License along with this program\. If not, see \fIhttp://www\.gnu\.org/licenses/\fR\.

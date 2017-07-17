@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>ds(1) - Docker Scripts</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+  <style type='text/css' media='all'>
+  /* style: toc */
+  #man .man-navigation {display: block !important;position: fixed;top: 0;left: 113ex;height: 100%;width: 100%;padding: 48px 0 0 0;border-left: 1px solid #dbdbdb;background: #eee}
+  #man .man-navigation a,#man .man-navigation a:hover,#man .man-navigation a:link,#man .man-navigation a:visited {display: block;margin: 0;padding: 5px 2px 5px 30px;color: #444;text-decoration: none}
+  #man .man-navigation a:hover {color: #666;text-decoration: underline}
+  </style>
+  <style type='text/css' media='all'>
+  /* style: 80c */
+  .mp {max-width:86ex}
+   
+  .man-navigation {left:101ex}
+  </style>
+  <style type='text/css' media='all'>
+  /* style: dark */
+  .mp,body#manpage {background:#080706;color:#888}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#aaa}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#fff}
+  .man-decor,.man-decor ol li {color:#666}
+  .mp code,.mp strong,.mp b {color:#fff}
+  .mp em,.mp var,.mp u {color:#ddd}
+  .mp pre code {color:#ddd}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#fff}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#COMMANDS">COMMANDS</a>
+    <a href="#FILES">FILES</a>
+    <a href="#CUSTOMIZATION">CUSTOMIZATION</a>
+    <a href="#INSTALLATION">INSTALLATION</a>
+    <a href="#USAGE">USAGE</a>
+    <a href="#AUTHOR">AUTHOR</a>
+    <a href="#COPYLEFT">COPYLEFT</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>ds(1)</li>
+    <li class='tc'>DockerScripts</li>
+    <li class='tr'>ds(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>ds</code> - <span class="man-whatis">Docker Scripts</span>
+</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p>   <code>ds</code> <em>COMMAND</em></p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p>   DockerScripts is a shell script framework for Docker which
+   simplifies managing containers in a context. Each container is like
+   a virtual machine that has an application installed inside. Each
+   container has a base directory where the settings of the container
+   are stored (in the file <em>settings.sh</em>). The command <code>ds</code> picks the
+   parameters that it needs from the file <em>settings.sh</em> in the current
+   directory.</p>
+
+<h2 id="COMMANDS">COMMANDS</h2>
+
+<ul>
+<li><p><code>init</code> <em><var>src_dir</var></em>, <code>info</code></p>
+
+<p>  Initialize a working directory by getting the file <em>settings.sh</em>
+  from the given source directory. Show some of the current
+  settings.</p></li>
+<li><p><code>build</code>, <code>create</code>, <code>config</code></p>
+
+<p>  Build the image, create the container, and configure the guest
+  system inside the container.</p></li>
+<li><p><code>start</code>, <code>stop</code>, <code>restart</code></p>
+
+<p>  Start, stop and restart the container.</p></li>
+<li><p><code>shell</code></p>
+
+<p>  Get a shell on the container.</p></li>
+<li><p><code>exec</code></p>
+
+<p>  Execute a command inside the container.</p></li>
+<li><p><code>snapshot</code></p>
+
+<p>  Make a snapshot of the container.</p></li>
+<li><p><code>remove</code></p>
+
+<p>  Remove the container and the image.</p></li>
+<li><p><code>help</code></p>
+
+<p>  Display a help message.</p></li>
+</ul>
+
+
+<h2 id="FILES">FILES</h2>
+
+<p>   <code>./settings.sh</code></p>
+
+<pre><code>      It is located in directory of the container and keeps
+      the settings of the container and the application installed
+      inside it.
+</code></pre>
+
+<h2 id="CUSTOMIZATION">CUSTOMIZATION</h2>
+
+<p>The file <code>$SRC/ds.sh</code> or <code>./ds.sh</code> can be used to redefine and
+customize some functions, without having to touch the code of the main
+script.  Also, custom commands can be defined for each container by
+adding the file <code>./cmd/command.sh</code>, which contains the function
+<code>cmd_command() { . . . }</code>.</p>
+
+<h2 id="INSTALLATION">INSTALLATION</h2>
+
+<p>   user@laptop:~$ <code>git clone https://github.com/docker-scripts/ds</code>
+   user@laptop:~$ <code>cd ds/</code>
+   user@laptop:~$ <code>sudo make install</code>
+   user@laptop:~$ <code>ds help</code></p>
+
+<h2 id="USAGE">USAGE</h2>
+
+<p>   Some examples of using <code>ds</code> are shown below.</p>
+
+<h3 id="Installing-Moodle">Installing Moodle</h3>
+
+<p>   user@laptop:~# <code>git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle</code>
+   user@laptop:~# <code>mkdir -p /var/containers/moodle1</code>
+   user@laptop:~# <code>cd /var/containers/moodle1/</code>
+   user@laptop:~# <code>ds init /usr/local/src/moodle</code>
+   user@laptop:~# <code>vim settings.sh</code>
+   user@laptop:~# <code>ds build</code>
+   user@laptop:~# <code>ds create</code>
+   user@laptop:~# <code>ds config</code>
+   user@laptop:~# <code>ds shell</code></p>
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>   Copyright (C) 2017  Dashamir Hoxha (dashohoxha@gmail.com). The
+   code is on GitHub at <a href="https://github.com/dashohoxha/ds" data-bare-link="true">https://github.com/dashohoxha/ds</a>.</p>
+
+<h2 id="COPYLEFT">COPYLEFT</h2>
+
+<p>   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.</p>
+
+<p>   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.</p>
+
+<p>   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <a href="http://www.gnu.org/licenses/" data-bare-link="true">http://www.gnu.org/licenses/</a>.</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'>dashohoxha</li>
+    <li class='tc'>July 2017</li>
+    <li class='tr'>ds(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
