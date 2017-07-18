@@ -22,9 +22,10 @@ cmd_create() {
         $ports "$@" $IMAGE
 }
 
+### configure the host for running systemd containers
+### See: https://github.com/solita/docker-systemd/blob/master/setup
 _systemd_config() {
-    ### configure the host for running systemd containers
-    if [[ -z $(nsenter --mount=/proc/1/ns/mnt -- mount | grep /sys/fs/cgroup/systemd) ]]; then
+    if nsenter --mount=/proc/1/ns/mnt -- mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
         [[ ! -d /sys/fs/cgroup/systemd ]] && mkdir -p /sys/fs/cgroup/systemd
         nsenter --mount=/proc/1/ns/mnt -- mount -t cgroup cgroup -o none,name=systemd /sys/fs/cgroup/systemd
     fi
