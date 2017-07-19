@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /host/settings.sh
+DOMAIN=${DOMAIN:-example.org}
 
 ### create a configuration file
 cat <<EOF > /etc/apache2/sites-available/$IMAGE.conf

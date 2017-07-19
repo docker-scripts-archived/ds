@@ -1,13 +1,9 @@
 #!/bin/bash
 
+set -o pipefail
 VERSION="0.9"
 LIBDIR="$(dirname "$0")"
-set -o pipefail
-
-fail() {
-    echo -e "$@" >&2
-    exit 1
-}
+source "$LIBDIR/auxiliary.sh"
 
 cmd_version() {
     echo -e "\nDockerScripts $VERSION    ( https://github.com/dashohoxha/ds )\n"
@@ -26,26 +22,37 @@ cmd_restart() {
 }
 
 cmd_shell() {
-    cmd_start
+    is_up || cmd_start
     cmd_exec bash
 }
 
 cmd_exec() {
+    is_up || cmd_start
     docker exec -it $CONTAINER env TERM=xterm "$@"
 }
 
 cmd_remove() {
-    cmd_stop
+    is_up && cmd_stop
     docker rm $CONTAINER 2>/dev/null
     docker rmi $IMAGE 2>/dev/null
 }
 
 call() {
     local cmd=$1; shift
-    local file="$LIBDIR/$(echo $cmd | tr _ /).sh"
-    [[ -f "$file" ]] || file="$SRC/$(echo $cmd | tr _ /).sh"
-    [[ -f "$file" ]] || fail "Cannot find command '$cmd'"
-    source "$file"
+
+    # load the generic command file
+    [[ -f "$LIBDIR/${cmd//_//}.sh" ]] && source "$LIBDIR/${cmd//_//}.sh"
+
+    # load the specific command file
+    [[ -f "$SRC/${cmd//_//}.sh" ]] && source "$SRC/${cmd//_//}.sh"
+
+    # load the local command file
+    [[ -f "${cmd//_//}.sh" ]] && source "${cmd//_//}.sh"
+
+    # run the command
+    is_function $cmd || fail "Cannot find command '$cmd'"
+    CMD=${cmd#*_}
+    COMMAND="$PROGRAM ${CMD//_/ }"
     $cmd "$@"
 }
 
