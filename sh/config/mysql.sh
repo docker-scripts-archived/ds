@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 ### regenerate the password of debian-sys-maint
 passwd=$(mcookie | head -c 16)

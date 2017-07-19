@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 ### customize the shell prompt
 
 source /host/settings.sh

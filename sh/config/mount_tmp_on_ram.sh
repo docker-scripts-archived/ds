@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 ### mount /tmp on RAM for better performance
 
 sed -i /etc/fstab \

@@ -71,25 +71,46 @@ Display a help message\.
 .
 .nf
 
-      It is located in directory of the container and keeps
-      the settings of the container and the application installed
-      inside it\.
+      It is located in directory of the container and keeps the
+      settings of the container and the settings of the
+      application installed inside it\.
 .
 .fi
 .
 .IP "" 0
 .
 .SH "CUSTOMIZATION"
-The file \fB$SRC/ds\.sh\fR or \fB\./ds\.sh\fR can be used to redefine and customize some functions, without having to touch the code of the main script\. Also, custom commands can be defined for each container by adding the file \fB\./cmd/command\.sh\fR, which contains the function \fBcmd_command() { \. \. \. }\fR\.
+The file \fB$SRC/ds\.sh\fR or \fB\./ds\.sh\fR can be used to redefine and customize some functions, without having to touch the code of the main script\. Also, custom commands can be defined for each container type and for each container in the file \fB$SRC/cmd/command\.sh\fR or \fB\./cmd/command\.sh\fR, which should contain the function \fBcmd_command() { \. \. \. }\fR\. If the name of a defined command is the same as an existing command, it overrides the existing one\.
 .
 .SH "INSTALLATION"
-user@laptop:~$ \fBgit clone https://github\.com/docker\-scripts/ds\fR user@laptop:~$ \fBcd ds/\fR user@laptop:~$ \fBsudo make install\fR user@laptop:~$ \fBds help\fR
+.
+.nf
+
+git clone https://github\.com/docker\-scripts/ds /usr/local/src/ds
+cd /usr/local/src/ds/
+make install
+ds help
+.
+.fi
 .
 .SH "USAGE"
 Some examples of using \fBds\fR are shown below\.
 .
 .SS "Installing Moodle"
-user@laptop:~# \fBgit clone https://github\.com/docker\-scripts/moodle /usr/local/src/moodle\fR user@laptop:~# \fBmkdir \-p /var/containers/moodle1\fR user@laptop:~# \fBcd /var/containers/moodle1/\fR user@laptop:~# \fBds init /usr/local/src/moodle\fR user@laptop:~# \fBvim settings\.sh\fR user@laptop:~# \fBds build\fR user@laptop:~# \fBds create\fR user@laptop:~# \fBds config\fR user@laptop:~# \fBds shell\fR
+.
+.nf
+
+git clone https://github\.com/docker\-scripts/moodle /usr/local/src/moodle
+mkdir \-p /var/containers/moodle1
+cd /var/containers/moodle1/
+ds init /usr/local/src/moodle
+vim settings\.sh
+ds build
+ds create
+ds config
+ds shell
+.
+.fi
 .
 .SH "AUTHOR"
 Copyright (C) 2017 Dashamir Hoxha (dashohoxha@gmail\.com)\. The code is on GitHub at \fIhttps://github\.com/dashohoxha/ds\fR\.

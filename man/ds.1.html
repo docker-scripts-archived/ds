@@ -150,25 +150,28 @@
 
 <p>   <code>./settings.sh</code></p>
 
-<pre><code>      It is located in directory of the container and keeps
-      the settings of the container and the application installed
-      inside it.
+<pre><code>      It is located in directory of the container and keeps the
+      settings of the container and the settings of the
+      application installed inside it.
 </code></pre>
 
 <h2 id="CUSTOMIZATION">CUSTOMIZATION</h2>
 
 <p>The file <code>$SRC/ds.sh</code> or <code>./ds.sh</code> can be used to redefine and
 customize some functions, without having to touch the code of the main
-script.  Also, custom commands can be defined for each container by
-adding the file <code>./cmd/command.sh</code>, which contains the function
-<code>cmd_command() { . . . }</code>.</p>
+script.  Also, custom commands can be defined for each container type
+and for each container in the file <code>$SRC/cmd/command.sh</code> or
+<code>./cmd/command.sh</code>, which should contain the function <code>cmd_command() {
+. . . }</code>. If the name of a defined command is the same as an existing
+command, it overrides the existing one.</p>
 
 <h2 id="INSTALLATION">INSTALLATION</h2>
 
-<p>   user@laptop:~$ <code>git clone https://github.com/docker-scripts/ds</code>
-   user@laptop:~$ <code>cd ds/</code>
-   user@laptop:~$ <code>sudo make install</code>
-   user@laptop:~$ <code>ds help</code></p>
+<pre><code>git clone https://github.com/docker-scripts/ds /usr/local/src/ds
+cd /usr/local/src/ds/
+make install
+ds help
+</code></pre>
 
 <h2 id="USAGE">USAGE</h2>
 
@@ -176,15 +179,16 @@ adding the file <code>./cmd/command.sh</code>, which contains the function
 
 <h3 id="Installing-Moodle">Installing Moodle</h3>
 
-<p>   user@laptop:~# <code>git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle</code>
-   user@laptop:~# <code>mkdir -p /var/containers/moodle1</code>
-   user@laptop:~# <code>cd /var/containers/moodle1/</code>
-   user@laptop:~# <code>ds init /usr/local/src/moodle</code>
-   user@laptop:~# <code>vim settings.sh</code>
-   user@laptop:~# <code>ds build</code>
-   user@laptop:~# <code>ds create</code>
-   user@laptop:~# <code>ds config</code>
-   user@laptop:~# <code>ds shell</code></p>
+<pre><code>git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle
+mkdir -p /var/containers/moodle1
+cd /var/containers/moodle1/
+ds init /usr/local/src/moodle
+vim settings.sh
+ds build
+ds create
+ds config
+ds shell
+</code></pre>
 
 <h2 id="AUTHOR">AUTHOR</h2>
 

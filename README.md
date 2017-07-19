@@ -50,27 +50,28 @@ from the file *settings.sh* in the current directory.
 ## FILES
 
    `./settings.sh`
-          It is located in directory of the container and keeps
-          the settings of the container and the application installed
-          inside it.
+          It is located in directory of the container and keeps the
+          settings of the container and the settings of the
+          application installed inside it.
 
 
 ## CUSTOMIZATION
 
 The file `$SRC/ds.sh` or `./ds.sh` can be used to redefine and
 customize some functions, without having to touch the code of the main
-script.  Also, custom commands can be defined for each container by
-adding the file `./cmd/command.sh`, which contains the function
-`cmd_command() { . . . }`.
+script.  Also, custom commands can be defined for each container type
+and for each container in the file `$SRC/cmd/command.sh` or
+`./cmd/command.sh`, which should contain the function `cmd_command() {
+. . . }`. If the name of a defined command is the same as an existing
+command, it overrides the existing one.
 
 
 ## INSTALLATION
 
-   git clone https://github.com/docker-scripts/ds
-   cd ds/
-   sudo make install
-   ds help
-
+    git clone https://github.com/docker-scripts/ds /usr/local/src/ds
+    cd /usr/local/src/ds/
+    make install
+    ds help
 
 ## USAGE
 

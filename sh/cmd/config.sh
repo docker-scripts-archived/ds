@@ -5,6 +5,7 @@ cmd_config() {
     sleep 3
 
     # apply standard configurations listed on $CONFIG
+    source $SRC/config/00-CONFIG.sh
     for cfg in $CONFIG; do
         [[ -x $LIBDIR/config/$cfg.sh ]] || continue
         rm -rf tmp/
