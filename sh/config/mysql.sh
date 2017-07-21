@@ -3,7 +3,7 @@
 ### regenerate the password of debian-sys-maint
 passwd=$(mcookie | head -c 16)
 mysql --defaults-file=/etc/mysql/debian.cnf -B \
-    -e "SET PASSWORD FOR 'debian-sys-maint'@'localhost' = PASSWORD('$passwd');"
+    -e "SET PASSWORD FOR 'debian-sys-maint'@'localhost' = PASSWORD('$passwd');" &&
 sed -i /etc/mysql/debian.cnf \
     -e "/^password/c password = $passwd"
 
