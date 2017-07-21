@@ -1,5 +1,5 @@
 cmd_info() {
-    local format, name, time, size, status
+    local format name time size status
 
     cat <<-_EOF
 
