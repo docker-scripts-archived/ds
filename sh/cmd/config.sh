@@ -4,28 +4,9 @@ cmd_config() {
     cmd_start
     sleep 3
 
-    # apply standard configurations listed on $CONFIG
-    source $SRC/config/00-CONFIG.sh
-    for cfg in $CONFIG; do
-        [[ -x $LIBDIR/config/$cfg.sh ]] || continue
-        rm -rf tmp/
-        mkdir tmp/
-        cp $LIBDIR/config/$cfg.sh tmp/
-        echo -e "\n--> $cfg.sh"
-        cmd_exec /host/tmp/$cfg.sh
-    done
-
-    # apply custom configuration scripts listed on 'config/'
-    rm -rf tmp/
-    mkdir tmp
-    cp $SRC/config/* tmp/
-    for f in $(ls tmp/*.sh); do
-        f=$(basename $f)
-        [[ -x tmp/$f ]] || continue
-        echo -e "\n--> $f"
-        cmd_exec /host/tmp/$f
-    done
-    rm -rf tmp/
+    # Run configuration scripts with: # ds runcfg $cfg
+    # Configuration scripts are located either at
+    # $LIBDIR/config/ or at $SRC/config/
 
     cmd_restart
 }
