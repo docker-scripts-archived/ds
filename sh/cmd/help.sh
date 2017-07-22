@@ -29,19 +29,17 @@ The commands are listed below.
 
     help
         Display a help message.
-_EOF
-
-    for cmd_file in $SRC/cmd/*.sh; do
-        [[ -f "$cmd_file" ]] || continue
-        source "$cmd_file"
-        cmd=$(basename "${cmd_file%%.sh}")
-        cmd_${cmd}_help
-    done
-
-    cat <<_EOF
 
 More information may be found in the ds(1) man page.
 
 _EOF
 
+    local cmd cmd_help
+    for cmd_file in $SRC/cmd/*.sh ./cmd/*.sh; do
+        [[ -f "$cmd_file" ]] || continue
+        source "$cmd_file"
+        cmd=$(basename "${cmd_file%%.sh}")
+        cmd_help=cmd_${cmd}_help
+        is_function $cmd_help && $cmd_help || echo -e "    $cmd\n"
+    done
 }
