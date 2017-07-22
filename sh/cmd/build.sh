@@ -1,3 +1,11 @@
+cmd_build_help() {
+    cat <<_EOF
+    build
+        Build the docker image.
+
+_EOF
+}
+
 cmd_build() {
     local datestamp=$(date +%F | tr -d -)
     local nohup_out=nohup-$CONTAINER-$datestamp.out

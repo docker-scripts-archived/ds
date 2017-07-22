@@ -1,3 +1,11 @@
+cmd_help_help() {
+    cat <<_EOF
+    help
+        Display a help message.
+
+_EOF
+}
+
 cmd_help() {
     cat <<-_EOF
 
@@ -14,6 +22,9 @@ The commands are listed below.
     build, create, config
         Build the image, create the container, and configure
         the guest system inside the container.
+
+    runcfg <cfg>
+        Run a configuration script.
 
     start, stop, restart
         Start, stop and restart the container.

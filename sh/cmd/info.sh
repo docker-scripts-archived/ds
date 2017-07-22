@@ -1,3 +1,11 @@
+cmd_info_help() {
+    cat <<_EOF
+    info
+        Show info about the container connected to the current directory.
+
+_EOF
+}
+
 cmd_info() {
     local format name time size status
 

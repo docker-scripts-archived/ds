@@ -1,5 +1,3 @@
-# Initialize a working directory.
-
 cmd_init_help() {
     cat <<_EOF
     init <src_dir>

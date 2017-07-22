@@ -1,3 +1,11 @@
+cmd_snapshot_help() {
+    cat <<_EOF
+    snapshot
+        Make a snapshot of the container.
+
+_EOF
+}
+
 cmd_snapshot() {
     local snapshot="$CONTAINER:$(date +%F)"
     docker rmi $snapshot 2> /dev/null
