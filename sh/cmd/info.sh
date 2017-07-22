@@ -21,7 +21,7 @@ IMAGE:
     Size:      $size
 
 _EOF
-        done < <(docker images --format "$format" | grep $IMAGE)
+        done < <(docker images --format "$format" | grep -E "$IMAGE|$CONTAINER")
     fi
 
     if [[ -n $CONTAINER ]]; then

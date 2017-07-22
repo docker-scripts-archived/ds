@@ -1,9 +1,7 @@
 cmd_snapshot() {
     local snapshot="$CONTAINER:$(date +%F)"
     docker rmi $snapshot 2> /dev/null
-    rm nohup.out
-    nohup docker commit -p -m "Snapshot $snapshot" $CONTAINER $snapshot &
-
-    echo "Saving $CONTAINER to $snapshot"
-    sleep 2
+    echo -e "\nMaking a snapshot of $CONTAINER to $snapshot\n"
+    nohup docker commit -p -m "Snapshot $snapshot" $CONTAINER $snapshot >/dev/null 2>&1 &
+    wait $!
 }
