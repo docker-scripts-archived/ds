@@ -1,7 +1,7 @@
 cmd_runcfg_help() {
     cat <<_EOF
     runcfg <cfg>
-        Run a configuration script.
+        Run a configuration script inside the container.
 
 _EOF
 }

@@ -21,6 +21,10 @@ from the file *settings.sh* in the current directory.
     Build the image, create the container, and configure the guest
     system inside the container.
 
+* `runcfg` *<cfg>*
+
+    Run a configuration script inside the container.
+
 * `start`, `stop`, `restart`
 
     Start, stop and restart the container.

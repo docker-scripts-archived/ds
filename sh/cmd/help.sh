@@ -24,7 +24,7 @@ The commands are listed below.
         the guest system inside the container.
 
     runcfg <cfg>
-        Run a configuration script.
+        Run a configuration script inside the container.
 
     start, stop, restart
         Start, stop and restart the container.

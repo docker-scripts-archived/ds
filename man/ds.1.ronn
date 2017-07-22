@@ -3,7 +3,7 @@ ds(1) -- Docker Scripts
 
 ## SYNOPSIS
 
-   `ds` *COMMAND*
+   `ds` *<command>* [*<options>* *<arguments>*]
 
 
 ## DESCRIPTION
@@ -29,6 +29,10 @@ ds(1) -- Docker Scripts
 
     Build the image, create the container, and configure the guest
     system inside the container.
+
+* `runcfg` *<cfg>*
+
+    Run a configuration script inside the container.
 
 * `start`, `stop`, `restart`
 
@@ -69,7 +73,7 @@ ds(1) -- Docker Scripts
 The file `$SRC/ds.sh` or `./ds.sh` can be used to redefine and
 customize some functions, without having to touch the code of the main
 script.  Also, custom commands can be defined for each container type
-and for each container in the file `$SRC/cmd/command.sh` or
+and for enach container in the file `$SRC/cmd/command.sh` or
 `./cmd/command.sh`, which should contain the function `cmd_command() {
 . . . }`. If the name of a defined command is the same as an existing
 command, it overrides the existing one.
@@ -80,24 +84,86 @@ command, it overrides the existing one.
     git clone https://github.com/docker-scripts/ds /usr/local/src/ds
     cd /usr/local/src/ds/
     make install
-    ds help
+    ds -h
 
 
 ## USAGE
 
    Some examples of using `ds` are shown below.
 
-### Installing Moodle
+### Installing Web Server Proxy
 
-    git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle
-    mkdir -p /var/containers/moodle1
-    cd /var/containers/moodle1/
-    ds init /usr/local/src/moodle
+    git clone https://github.com/docker-scripts/wsproxy /usr/local/src/wsproxy
+
+    mkdir -p /var/containers/wsproxy
+    cd /var/containers/wsproxy/
+
+    ds init /usr/local/src/wsproxy
     vim settings.sh
+
     ds build
     ds create
     ds config
-    ds shell
+
+
+### Installing Moodle
+
+    git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle
+
+    mkdir -p /var/containers/moodle1
+    cd /var/containers/moodle1/
+
+    ds init /usr/local/src/moodle
+    vim settings.sh
+
+    ds build
+    ds create
+    ds config
+
+    cd /var/container/wsproxy/
+    ds domains-add moodle1-example-org moodle1.example.org
+    ds get-ssl-cert user@example.org moodle1.example.org --test
+    ds get-ssl-cert user@example.org moodle1.example.org
+
+
+### Installing ShellInABox
+
+    git clone https://github.com/docker-scripts/shellinabox /usr/local/src/shellinabox
+
+    mkdir -p /var/containers/shell1
+    cd /var/containers/shell1/
+
+    ds init /usr/local/src/shellinabox
+    vim settings.sh
+
+    ds build
+    ds create
+    ds config
+
+    cd /var/container/wsproxy/
+    ds domains-add shell1-example-org shell1.example.org
+    ds get-ssl-cert user@example.org shell1.example.org --test
+    ds get-ssl-cert user@example.org shell1.example.org
+
+
+### Installing SchoolTool
+
+    git clone https://github.com/docker-scripts/schooltool /usr/local/src/schooltool
+
+    mkdir -p /var/containers/school1
+    cd /var/containers/school1/
+
+    ds init /usr/local/src/schooltool
+    vim settings.sh
+
+    ds build
+    ds create
+    ds config
+
+    cd /var/container/wsproxy/
+    ds domains-add school1-example-org school1.example.org
+    ds get-ssl-cert user@example.org school1.example.org --test
+    ds get-ssl-cert user@example.org school1.example.org
 
 
 ## AUTHOR
