@@ -26,7 +26,7 @@ _ds()
                 cfgscripts+=" $(_ds_custom_cfgscripts)"
                 COMPREPLY=( $(compgen -W "$cfgscripts" -- $cur) )
                 ;;
-            *) :
+            *) _ds_custom_completion $cmd $cur $prev
                 ;;
         esac
     fi
@@ -46,6 +46,22 @@ _ds_custom_cfgscripts() {
     [[ -d $SRC/config/ ]] && cfgscripts=$(ls $SRC/config/)
     cfgscripts="${cfgscripts//.sh/}"
     echo $cfgscripts
+}
+
+_ds_custom_completion() {
+    # check that the function with the given name exists
+    _ds_function_exists() {
+        declare -Ff "$1" >/dev/null
+        return $?
+    }
+
+    local cmd=$1
+    local cur=$2
+    local prev=$3
+
+    source ./settings.sh
+    [[ -f $SRC/bash-completion.sh ]] && source $SRC/bash-completion.sh || return
+    _ds_function_exists "_ds_$cmd" && _ds_$cmd $cur $prev
 }
 
 complete -F _ds ds docker.sh src/docker.sh
