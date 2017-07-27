@@ -37,6 +37,21 @@ cmd_remove() {
     docker rmi $IMAGE 2>/dev/null
 }
 
+run_cmd() {
+    local cmd="$1" ; shift
+    case $cmd in
+        -x) set -x
+            run_cmd "$@"
+            ;;
+        start|stop|restart|shell|exec|remove)
+            cmd_$cmd "$@"
+            ;;
+        *)
+            call cmd_$cmd "$@"
+            ;;
+    esac
+}
+
 call() {
     local cmd=$1; shift
 
@@ -81,8 +96,7 @@ main() {
     PROGRAM="${0##*/}"
 
     # handle some basic commands
-    local cmd="$1" ; shift
-    case $cmd in
+    case $1 in
         v|-v|version|--version)  cmd_version "$@" ; exit 0 ;;
         ''|-h|--help)            call cmd_help "$@" ; exit 0 ;;
         init)                    call cmd_init "$@" ; exit 0 ;;
@@ -98,11 +112,7 @@ main() {
     [[ -f ds.sh ]] && source ds.sh
 
     # run the given command
-    case $cmd in
-        start|stop|restart|shell|exec|remove)
-            cmd_$cmd "$@" ;;
-        *)  call cmd_$cmd "$@" ;;
-    esac
+    run_cmd "$@"
 }
 
 main "$@"

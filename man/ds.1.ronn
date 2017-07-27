@@ -3,7 +3,7 @@ ds(1) -- Docker Scripts
 
 ## SYNOPSIS
 
-   `ds` *<command>* [*<options>* *<arguments>*]
+   `ds` [-x] *<command>* [*<options>* *<arguments>*]
 
 
 ## DESCRIPTION
