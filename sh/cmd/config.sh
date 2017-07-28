@@ -12,7 +12,7 @@ cmd_config() {
 
     # Run configuration scripts with: # ds runcfg $cfg
     # Configuration scripts are located either at
-    # $LIBDIR/config/ or at $SRC/config/
+    # $LIBDIR/config/ or at $APP_DIR/config/
 
     cmd_restart
 }

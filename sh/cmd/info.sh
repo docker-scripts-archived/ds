@@ -12,7 +12,8 @@ cmd_info() {
     cat <<-_EOF
 
 SETTINGS:
-    SRC:       $SRC
+    APP:       $APP
+    APP_DIR:   $APP_DIR
     IMAGE:     $IMAGE
     CONTAINER: $CONTAINER
     PORTS:     $PORTS

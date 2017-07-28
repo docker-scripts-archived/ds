@@ -61,10 +61,10 @@ from the file *settings.sh* in the current directory.
 
 ## CUSTOMIZATION
 
-The file `$SRC/ds.sh` or `./ds.sh` can be used to redefine and
+The file `$APP_DIR/ds.sh` or `./ds.sh` can be used to redefine and
 customize some functions, without having to touch the code of the main
 script.  Also, custom commands can be defined for each container type
-and for each container in the file `$SRC/cmd/command.sh` or
+and for each container in the file `$APP_DIR/cmd/command.sh` or
 `./cmd/command.sh`, which should contain the function `cmd_command() {
 . . . }`. If the name of a defined command is the same as an existing
 command, it overrides the existing one.

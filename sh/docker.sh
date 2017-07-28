@@ -6,7 +6,7 @@ LIBDIR="$(dirname "$0")"
 source "$LIBDIR/auxiliary.sh"
 
 cmd_version() {
-    echo -e "\nDockerScripts $VERSION    ( https://github.com/dashohoxha/ds )\n"
+    echo "DockerScripts:$VERSION https://github.com/dashohoxha/ds"
 }
 
 cmd_start() {
@@ -37,21 +37,6 @@ cmd_remove() {
     docker rmi $IMAGE 2>/dev/null
 }
 
-run_cmd() {
-    local cmd="$1" ; shift
-    case $cmd in
-        -x) set -x
-            run_cmd "$@"
-            ;;
-        start|stop|restart|shell|exec|remove)
-            cmd_$cmd "$@"
-            ;;
-        *)
-            call cmd_$cmd "$@"
-            ;;
-    esac
-}
-
 call() {
     local cmd=$1; shift
 
@@ -59,7 +44,7 @@ call() {
     [[ -f "$LIBDIR/${cmd//_//}.sh" ]] && source "$LIBDIR/${cmd//_//}.sh"
 
     # load the specific command file
-    [[ -f "$SRC/${cmd//_//}.sh" ]] && source "$SRC/${cmd//_//}.sh"
+    [[ -f "$APP_DIR/${cmd//_//}.sh" ]] && source "$APP_DIR/${cmd//_//}.sh"
 
     # load the local command file
     [[ -f "${cmd//_//}.sh" ]] && source "${cmd//_//}.sh"
@@ -71,17 +56,42 @@ call() {
     $cmd "$@"
 }
 
-load_settings() {
+load_ds_config() {
+    # read the config file
+    DSDIR=${DSDIR:-$HOME/.ds}
+    local config_file="$DSDIR/config.sh"
+    [[ -f "$config_file" ]] && source "$config_file"
+
+    # set defaults, if configurations are missing
+    GITHUB=${GITHUB:-https://github.com/docker-scripts}
+    APPS=${APPS:-/opt/docker-scripts}
+    CONTAINERS=${CONTAINERS:-/var/ds}
+
+    # create the config file, if it does not exist
+    if [[ ! -f "$config_file" ]]; then
+        mkdir -p "$(dirname "$config_file")"
+        cat <<-_EOF > "$config_file"
+GITHUB='$GITHUB'
+APPS='$APPS'
+CONTAINERS='$CONTAINERS'
+_EOF
+    fi
+}
+
+load_container_settings() {
     [[ -f settings.sh ]] \
         || fail "No file ./settings.sh found."
 
     # load the settings file
     source ./settings.sh
 
-    [[ -n $SRC ]] \
-        || fail "No SRC defined on ./settings.sh"
-    [[ -d $SRC ]] \
-        || fail "The SRC directory '$SRC' does not exist."
+    [[ -n $APP ]] \
+        || fail "No APP defined on ./settings.sh"
+
+    APP_DIR="$APPS/$APP"
+    [[ -d $APP_DIR ]] \
+        || fail "The app directory '$APP_DIR' does not exist."
+
     [[ -n $IMAGE ]] \
         || fail "No IMAGE defined on ./settings.sh"
     [[ -n $CONTAINER ]] \
@@ -95,24 +105,43 @@ main() {
 
     PROGRAM="${0##*/}"
 
+    # load ~/.ds/config.sh
+    load_ds_config
+
     # handle some basic commands
-    case $1 in
-        v|-v|version|--version)  cmd_version "$@" ; exit 0 ;;
-        ''|-h|--help)            call cmd_help "$@" ; exit 0 ;;
-        init)                    call cmd_init "$@" ; exit 0 ;;
+    local arg1=$1 ; shift
+    case $arg1 in
+        '')            cat $DSDIR/config.sh ; exit 0 ;;
+        -v|--version)  cmd_version "$@" ;     exit 0 ;;
+        -h|--help)     call cmd_help "$@" ;   exit 0 ;;
+        pull|init)     call cmd_$arg1 "$@" ;  exit 0 ;;
+        -x)            set -x ;;
+        @*) # cd to the container directory
+            local dir="$CONTAINERS/${arg1:1}"
+            [[ -d "$dir" ]] || fail "Container directory '$dir' does not exist."
+            cd "$dir"
+            ;;
     esac
 
-    # load settings.sh
-    load_settings
+    # load container settings.sh
+    load_container_settings
 
     # The file 'ds.sh' can be used to redefine
     # and customize some functions, without having to
     # touch the code of the main script.
-    [[ -f "$SRC/ds.sh" ]] && source "$SRC/ds.sh"
+    [[ -f "$DSDIR/ds.sh" ]] && source "$DSDIR/ds.sh"
+    [[ -f "$APP_DIR/ds.sh" ]] && source "$APP_DIR/ds.sh"
     [[ -f ds.sh ]] && source ds.sh
 
     # run the given command
-    run_cmd "$@"
+    case $arg1 in
+        start|stop|restart|shell|exec|remove)
+            cmd_$arg1 "$@"
+            ;;
+        *)
+            call cmd_$arg1 "$@"
+            ;;
+    esac
 }
 
 main "$@"

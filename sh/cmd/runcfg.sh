@@ -12,7 +12,7 @@ cmd_runcfg() {
     # get the path of the configuration script
     local cfgscript
     [[ -x $LIBDIR/config/$cfg.sh ]] && cfgscript=$LIBDIR/config/$cfg.sh
-    [[ -x $SRC/config/$cfg.sh ]] && cfgscript=$SRC/config/$cfg.sh
+    [[ -x $APP_DIR/config/$cfg.sh ]] && cfgscript=$APP_DIR/config/$cfg.sh
     [[ -x ./config/$cfg.sh ]] && cfgscript=./config/$cfg.sh
     [[ -x $cfgscript ]] || fail "\n--> Configuration script '$cfg' not found.\n"
 

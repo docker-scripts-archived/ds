@@ -35,7 +35,7 @@ _ds()
 _ds_custom_commands() {
     local commands=""
     source ./settings.sh
-    [[ -d $SRC/cmd/ ]] && commands=$(ls $SRC/cmd/)
+    [[ -d $APP_DIR/cmd/ ]] && commands=$(ls $APP_DIR/cmd/)
     commands="${commands//.sh/}"
     echo $commands
 }
@@ -43,7 +43,7 @@ _ds_custom_commands() {
 _ds_custom_cfgscripts() {
     local cfgscripts=""
     source ./settings.sh
-    [[ -d $SRC/config/ ]] && cfgscripts=$(ls $SRC/config/)
+    [[ -d $APP_DIR/config/ ]] && cfgscripts=$(ls $APP_DIR/config/)
     cfgscripts="${cfgscripts//.sh/}"
     echo $cfgscripts
 }
@@ -60,7 +60,7 @@ _ds_custom_completion() {
     local prev=$3
 
     source ./settings.sh
-    [[ -f $SRC/bash-completion.sh ]] && source $SRC/bash-completion.sh || return
+    [[ -f $APP_DIR/bash-completion.sh ]] && source $APP_DIR/bash-completion.sh || return
     _ds_function_exists "_ds_$cmd" && _ds_$cmd $cur $prev
 }
 
