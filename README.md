@@ -66,13 +66,13 @@ DockerScripts
     ds pull shellinabox
     ds init shellinabox @shell1
 
-    source cd ds @shell1
+    source ds cd @shell1
     vim settings.sh
     ds build
     ds create
     ds config
 
-    source cd ds @wsproxy
+    source ds cd @wsproxy
     ds domains-add shell1-example-org shell1.example.org
     ds get-ssl-cert user@example.org shell1.example.org --test
     ds get-ssl-cert user@example.org shell1.example.org
