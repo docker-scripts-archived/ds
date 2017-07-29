@@ -22,6 +22,8 @@ DockerScripts
 
    The option `-x` can be used for debugging.
 
+   For more details see the man page: https://docker-scripts.github.io/ds/ds-1.0/man/
+
 
 ## INSTALLATION
 
