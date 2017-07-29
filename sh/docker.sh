@@ -37,6 +37,16 @@ cmd_remove() {
     docker rmi $IMAGE 2>/dev/null
 }
 
+# Whwn the command is 'cd', go to the directory of the given container.
+# It must be called by sourcing, like this: `. ds cd @container`
+cmd_cd() {
+    DSDIR=${DSDIR:-$HOME/.ds}
+    local config_file="$DSDIR/config.sh"
+    local containers=$(cat $config_file | grep CONTAINERS= | sed -e "s/CONTAINERS=//" | tr -d "'"'"'' ')
+    local arg1=$1
+    cd $containers/${arg1:1}
+}
+
 call() {
     local cmd=$1; shift
 
@@ -60,23 +70,16 @@ load_ds_config() {
     # read the config file
     DSDIR=${DSDIR:-$HOME/.ds}
     local config_file="$DSDIR/config.sh"
-    [[ -f "$config_file" ]] && source "$config_file"
-
-    # set defaults, if configurations are missing
-    GITHUB=${GITHUB:-https://github.com/docker-scripts}
-    APPS=${APPS:-/opt/docker-scripts}
-    CONTAINERS=${CONTAINERS:-/var/ds}
-    mkdir -p $APPS $CONTAINERS
-
-    # create the config file, if it does not exist
     if [[ ! -f "$config_file" ]]; then
         mkdir -p "$(dirname "$config_file")"
         cat <<-_EOF > "$config_file"
-GITHUB='$GITHUB'
-APPS='$APPS'
-CONTAINERS='$CONTAINERS'
+GITHUB='https://github.com/docker-scripts'
+APPS='/opt/docker-scripts'
+CONTAINERS='/var/ds'
 _EOF
     fi
+    source "$config_file"
+    mkdir -p $APPS $CONTAINERS
 }
 
 ds_info() {
@@ -134,6 +137,14 @@ main() {
     # check the docker version
     local version=$(docker --version | cut -d, -f1 | cut -d' ' -f3 | cut -d. -f1)
     [[ "$version" -lt 17 ]] && fail "These scripts are supposed to work with docker 17+"
+
+    # if the command is 'cd', go to the directory of the given container
+    # it must be called by sourcing, like this: `. ds cd @container`
+    if [[ "$1" == 'cd' ]]; then
+        local container=$2
+        cmd_cd $container
+        return
+    fi
 
     PROGRAM="${0##*/}"
 
