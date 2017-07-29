@@ -3,34 +3,52 @@ ds(1) -- Docker Scripts
 
 ## SYNOPSIS
 
-   `ds` [-x] *<command>* [*<options>* *<arguments>*]
+   `ds [-x] [@<container>] <command> [<arg>...]`
 
 
 ## DESCRIPTION
 
-   DockerScripts is a shell script framework for Docker which
-   simplifies managing containers in a context. Each container is like
-   a virtual machine that has an application installed inside. Each
-   container has a base directory where the settings of the container
-   are stored (in the file *settings.sh*). The command `ds` picks the
-   parameters that it needs from the file *settings.sh* in the current
-   directory.
+   DockerScripts is a shell script framework for Docker.
+
+   Each container is like a virtual machine that has an application
+   installed inside. Each container has a base directory where the
+   settings of the container are stored (in the file
+   `settings.sh`). The command `ds` picks the parameters that it needs
+   from the file `settings.sh` in the container's directory.
+
+   Normally the commands are issued from inside the container's
+   directory, however the option `@<container>` can be used to specify
+   the context of the command.
+
+   The option `-x` can be used for debugging.
 
 
 ## COMMANDS
 
-* `init` *<src_dir>*, `info`
+* `pull <app> [<branch>]`
 
-    Initialize a working directory by getting the file *settings.sh*
-    from the given source directory. Show some of the current
-    settings.
+    Clone or pull `https://github.com/docker-scripts/<app>` to
+    `/opt/docker-scripts/<app>`. A certain branch can be specified
+    as well. When a branch is given, then it is saved to
+    `/opt/docker-scripts/<app>-<branch>`.
+
+* `init <app> [@<container>]`
+
+    Initialize a container directory by getting the file `settings.sh`
+    from the given app directory. If the second argument is missing,
+    the current directory will be used to initialize the container,
+    otherwise it will be done on `/var/ds/<container>`.
+
+* `info`
+
+    Show some info about the container of the current directory.
 
 * `build`, `create`, `config`
 
     Build the image, create the container, and configure the guest
     system inside the container.
 
-* `runcfg` *<cfg>*
+* `runcfg <cfg>`
 
     Run a configuration script inside the container.
 
@@ -44,7 +62,7 @@ ds(1) -- Docker Scripts
 
 * `exec`
 
-    Execute a command inside the container.
+    Execute a command from outside the container.
 
 * `snapshot`
 
@@ -59,8 +77,16 @@ ds(1) -- Docker Scripts
     Display a help message.
 
 
-
 ## FILES
+
+   `~/.ds/`
+          The default ds config directory.
+
+   `~/.ds/config.sh`
+          The configuration file.
+
+   `~/.ds/ds.sh`
+          Optional customization file.
 
    `./settings.sh`
           It is located in directory of the container and keeps the
@@ -68,39 +94,65 @@ ds(1) -- Docker Scripts
           application installed inside it.
 
 
+## ENVIRONMENT
+
+   `DSDIR`
+          Overrides the default ds config directory (~/.ds/).
+
+
 ## CUSTOMIZATION
 
-The file `$APP_DIR/ds.sh` or `./ds.sh` can be used to redefine and
-customize some functions, without having to touch the code of the main
-script.  Also, custom commands can be defined for each container type
-and for enach container in the file `$APP_DIR/cmd/command.sh` or
-`./cmd/command.sh`, which should contain the function `cmd_command() {
-. . . }`. If the name of a defined command is the same as an existing
-command, it overrides the existing one.
+The functions of DockerScripts can be redifined or customized without
+having to touch the code of the installed script. The framework does
+this by including optional customization scripts, if it finds
+them. These scripts are included (sourced) in this order:
+
+ - `$DSDIR/ds.sh`
+    (by default `~/.ds/ds.sh`)
+ - `$APPS/<app>/ds.sh`
+    (by default `/opt/docker-scripts/<app>/ds.sh`)
+ - `$CONTAINERS/<container>/ds.sh`
+    (by default `/var/ds/<container>/ds.sh`)
+
+A newly defined function will override a previously defined one. To
+reuse the previous function inside the new one (if this makes sense),
+we can rename it before the new function is defined, like this:
+`rename_function fun1 orig_fun1`.
+
+Also, new commands can be defined for each application and for each
+container. The framework will look for a custom command named
+`cmd_command` in these places:
+
+ - `$APPS/<app>/cmd/command.sh`
+    (by default `/opt/docker-scripts/<app>/cmd/command.sh`)
+ - `$CONTAINERS/<container>/cmd/command.sh`
+    (by default `/var/ds/<container>/cmd/command.sh`)
+
+These files will be included (sourced) if they exist. If the name of a
+newly defined command is the same as an existing command, it will
+override the existing one. To reuse the previous command definition
+inside the definition of new one (if this makes sense), we can rename
+it before the new function is defined, like this:
+`rename_function cmd_command1 orig_cmd_command1`.
 
 
 ## INSTALLATION
 
-    git clone https://github.com/docker-scripts/ds /usr/local/src/ds
-    cd /usr/local/src/ds/
+    git clone https://github.com/docker-scripts/ds /opt/docker-scripts/ds
+    cd /opt/docker-scripts/ds/
     make install
+    ds
     ds -h
 
 
-## USAGE
-
-   Some examples of using `ds` are shown below.
+## EXAMPLES
 
 ### Installing Web Server Proxy
 
-    git clone https://github.com/docker-scripts/wsproxy /usr/local/src/wsproxy
-
-    mkdir -p /var/containers/wsproxy
-    cd /var/containers/wsproxy/
-
-    ds init /usr/local/src/wsproxy
+    ds pull wsproxy
+    ds init wsproxy @wsproxy
+    source ds cd @wsproxy   # (or: cd /var/ds/wsproxy/)
     vim settings.sh
-
     ds build
     ds create
     ds config
@@ -108,39 +160,32 @@ command, it overrides the existing one.
 
 ### Installing Moodle
 
-    git clone https://github.com/docker-scripts/moodle /usr/local/src/moodle
+    ds pull moodle
+    ds init moodle @moodle1
 
-    mkdir -p /var/containers/moodle1
-    cd /var/containers/moodle1/
-
-    ds init /usr/local/src/moodle
+    source ds cd @moodle1   # (or: cd /var/ds/moodle1/)
     vim settings.sh
-
     ds build
     ds create
     ds config
 
-    cd /var/container/wsproxy/
-    ds domains-add moodle1-example-org moodle1.example.org
-    ds get-ssl-cert user@example.org moodle1.example.org --test
-    ds get-ssl-cert user@example.org moodle1.example.org
+    ds @wsproxy domains-add moodle1-example-org moodle1.example.org
+    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org --test
+    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org
 
 
 ### Installing ShellInABox
 
-    git clone https://github.com/docker-scripts/shellinabox /usr/local/src/shellinabox
+    ds pull shellinabox
+    ds init shellinabox @shell1
 
-    mkdir -p /var/containers/shell1
-    cd /var/containers/shell1/
-
-    ds init /usr/local/src/shellinabox
+    source cd ds @shell1
     vim settings.sh
-
     ds build
     ds create
     ds config
 
-    cd /var/container/wsproxy/
+    source cd ds @wsproxy
     ds domains-add shell1-example-org shell1.example.org
     ds get-ssl-cert user@example.org shell1.example.org --test
     ds get-ssl-cert user@example.org shell1.example.org
@@ -148,19 +193,16 @@ command, it overrides the existing one.
 
 ### Installing SchoolTool
 
-    git clone https://github.com/docker-scripts/schooltool /usr/local/src/schooltool
+    ds pull schooltool
+    ds init schooltool @school1
 
-    mkdir -p /var/containers/school1
-    cd /var/containers/school1/
-
-    ds init /usr/local/src/schooltool
+    source ds cd @school1
     vim settings.sh
-
     ds build
     ds create
     ds config
 
-    cd /var/container/wsproxy/
+    source cd ds @wsproxy
     ds domains-add school1-example-org school1.example.org
     ds get-ssl-cert user@example.org school1.example.org --test
     ds get-ssl-cert user@example.org school1.example.org
@@ -169,7 +211,7 @@ command, it overrides the existing one.
 ## AUTHOR
 
    Copyright (C) 2017  Dashamir Hoxha (dashohoxha@gmail.com). The
-   code is on GitHub at <https://github.com/dashohoxha/ds>.
+   code is on GitHub at <https://github.com/docker-scripts/ds>.
 
 
 ## COPYLEFT
