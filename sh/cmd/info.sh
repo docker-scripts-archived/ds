@@ -1,7 +1,7 @@
 cmd_info_help() {
     cat <<_EOF
     info
-        Show info about the container connected to the current directory.
+        Show some info about the container of the current directory.
 
 _EOF
 }

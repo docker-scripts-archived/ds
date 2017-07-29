@@ -9,15 +9,38 @@ _EOF
 cmd_help() {
     cat <<-_EOF
 
-Usage: $PROGRAM <command>
+Usage: $PROGRAM [-x] [@<container>] <command> [<arg>...]
 
-DockerScripts is a shell script wrapper around Docker
-which simplifies managing containers in a context.
-The commands are listed below.
+DockerScripts is a shell script framework for Docker.
 
-    init <src_dir>, info
-        Initialize a working directory by getting the file 'settings.sh'
-        from the given source directory. Show some of the current settings
+Each container is like a virtual machine that has an application
+installed inside. Each container has a base directory where the
+settings of the container are stored (in the file
+`settings.sh`). The command `ds` picks the parameters that it needs
+from the file `settings.sh` in the container's directory.
+
+Normally the commands are issued from inside the container's
+directory, however the option `@<container>` can be used to specify
+the context of the command.
+
+The option `-x` can be used for debugging.
+
+The commands are listed below:
+
+    pull <app> [<branch>]
+        Clone or pull `$GITHUB/<app>`
+        to `$APPS/<app>`. A certain branch can be specified
+        as well. When a branch is given, then it is saved to
+        `$APPS/<app>-<branch>`.
+
+    init <app> [@<container>]
+        Initialize a container directory by getting the file `settings.sh`
+        from the given app directory. If the second argument is missing,
+        the current directory will be used to initialize the container,
+        otherwise it will be done on `$CONTAINERS/<container>`.
+
+    info
+        Show some info about the container of the current directory.
 
     build, create, config
         Build the image, create the container, and configure
