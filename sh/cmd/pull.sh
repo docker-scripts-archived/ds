@@ -1,8 +1,11 @@
 cmd_pull_help() {
     cat <<_EOF
     pull <app> [<branch>]
-        Clone or pull https://github.com/docker-scripts/<app>
-        to '$APPS/<app>'. A certain branch can be specified as well.
+        Clone or pull '$GITHUB/<app>'
+        to '$APPS/<app>'. A certain branch can be specified
+        as well. When a branch is given, then it is saved to
+        '$APPS/<app>-<branch>'
+
 _EOF
 }
 
@@ -22,6 +25,7 @@ cmd_pull() {
         local github_api_url="https://api.github.com/repos/$(basename $GITHUB)/$app"
         [[ -z "$(curl -s $github_api_url | grep 'Not Found')" ]] || fail "Repository '$github_url' not found."
         branch=${branch:-master}
+        [[ $branch == 'master' ]] || app_dir+="-$branch"
         git clone -b $branch $github_url $app_dir
     fi
 }
