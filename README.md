@@ -1,6 +1,13 @@
 DockerScripts
 =============
 
+## SYNOPSIS
+
+   `ds [-x] [@<container>] <command> [<arg>...]`
+
+
+## DESCRIPTION
+
    DockerScripts is a shell script framework for Docker.
 
    Each container is like a virtual machine that has an application
@@ -23,11 +30,6 @@ DockerScripts
     make install
     ds
     ds -h
-
-
-## SYNOPSIS
-
-   `ds [-x] [@<container>] <command> [<arg>...]`
 
 
 ## EXAMPLES
