@@ -103,6 +103,13 @@ For help about commands try: ds -h
 _EOF
 }
 
+cd_to_container_dir() {
+    local arg1=$1
+    local dir="$CONTAINERS/${arg1:1}"
+    [[ -d "$dir" ]] || fail "Container directory '$dir' does not exist."
+    cd "$dir"
+}
+
 load_container_settings() {
     [[ -f settings.sh ]] \
         || fail "No file ./settings.sh found."
@@ -134,18 +141,14 @@ main() {
     load_ds_config
 
     # handle some basic commands
-    local arg1=$1 ; shift
+    local arg1=$1
     case $arg1 in
         '')            ds_info ;              exit 0 ;;
         -v|--version)  cmd_version "$@" ;     exit 0 ;;
         -h|--help)     call cmd_help "$@" ;   exit 0 ;;
         pull|init)     call cmd_$arg1 "$@" ;  exit 0 ;;
-        -x)            set -x ;;
-        @*) # cd to the container directory
-            local dir="$CONTAINERS/${arg1:1}"
-            [[ -d "$dir" ]] || fail "Container directory '$dir' does not exist."
-            cd "$dir"
-            ;;
+        -x)            set -x ; shift ;;
+        @*)            cd_to_container_dir $arg1 ; shift ;;
     esac
 
     # load container settings.sh
@@ -159,12 +162,13 @@ main() {
     [[ -f ds.sh ]] && source ds.sh
 
     # run the given command
-    case $arg1 in
+    local command=$1
+    case $command in
         start|stop|restart|shell|exec|remove)
-            cmd_$arg1 "$@"
+            cmd_$command "$@"
             ;;
         *)
-            call cmd_$arg1 "$@"
+            call cmd_$command "$@"
             ;;
     esac
 }
