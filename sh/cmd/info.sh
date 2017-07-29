@@ -26,7 +26,7 @@ _EOF
             cat <<-_EOF
 IMAGE:
     Name:      $name
-    Created:   $time ago
+    Created:   $time
     Size:      $size
 
 _EOF
@@ -39,7 +39,7 @@ _EOF
         cat <<-_EOF
 CONTAINER:
     Name:      $name
-    Created:   $time ago
+    Created:   $time
     Status:    $status
 
 _EOF

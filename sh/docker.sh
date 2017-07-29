@@ -66,6 +66,7 @@ load_ds_config() {
     GITHUB=${GITHUB:-https://github.com/docker-scripts}
     APPS=${APPS:-/opt/docker-scripts}
     CONTAINERS=${CONTAINERS:-/var/ds}
+    mkdir -p $APPS $CONTAINERS
 
     # create the config file, if it does not exist
     if [[ ! -f "$config_file" ]]; then
@@ -76,6 +77,30 @@ APPS='$APPS'
 CONTAINERS='$CONTAINERS'
 _EOF
     fi
+}
+
+ds_info() {
+    cat <<-_EOF
+
+$(cmd_version)
+
+DSDIR='$DSDIR'
+
+--> ls $DSDIR :
+$(ls $DSDIR)
+
+--> cat $DSDIR/config.sh :
+$(cat $DSDIR/config.sh)
+
+--> ls $APPS:
+$(ls $APPS)
+
+--> ls $CONTAINERS:
+$(ls $CONTAINERS)
+
+For help about commands try: ds -h
+
+_EOF
 }
 
 load_container_settings() {
@@ -111,7 +136,7 @@ main() {
     # handle some basic commands
     local arg1=$1 ; shift
     case $arg1 in
-        '')            cat $DSDIR/config.sh ; exit 0 ;;
+        '')            ds_info ;              exit 0 ;;
         -v|--version)  cmd_version "$@" ;     exit 0 ;;
         -h|--help)     call cmd_help "$@" ;   exit 0 ;;
         pull|init)     call cmd_$arg1 "$@" ;  exit 0 ;;
