@@ -9,41 +9,93 @@ _ds()
     COMPREPLY=()   # Array variable storing the possible completions.
     local cur=${COMP_WORDS[COMP_CWORD]}     ## $2
     local prev=${COMP_WORDS[COMP_CWORD-1]}  ## $3
+    local preprev=${COMP_WORDS[COMP_CWORD-2]}
 
-    if [[ $COMP_CWORD -eq 1 ]]; then
-        local commands="version start stop restart shell exec remove"
-        commands+=" build config create help info init runcfg snapshot"
-        commands+=" $(_ds_custom_commands)"
-        COMPREPLY=( $(compgen -W "$commands" -- $cur) )
-    else
-        cmd=${COMP_WORDS[1]}
-        case $cmd in
-            init)
-                compopt -o dirnames
-                ;;
-            runcfg)
-                local cfgscripts="apache2 get-ssl-cert mount_tmp_on_ram mysql phpmyadmin set_prompt ssmtp"
-                cfgscripts+=" $(_ds_custom_cfgscripts)"
-                COMPREPLY=( $(compgen -W "$cfgscripts" -- $cur) )
-                ;;
-            *) _ds_custom_completion $cmd $cur $prev
-                ;;
-        esac
-    fi
+    [[ "$preprev" == '@' ]] && COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) ) && return
+
+    case $prev in
+        ds|docker.sh|sh/docker.sh)
+            case $cur in
+                -*) COMPREPLY=( $(compgen -W "-x -v --version -h --help" -- $cur) )
+                    ;;
+                @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- $cur) )
+                    ;;
+                *)  COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) )
+                    ;;
+            esac
+            ;;
+        -x)
+            case $cur in
+                @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- $cur) )
+                    ;;
+                *)  COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) )
+                    ;;
+            esac
+            ;;
+        @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- "@$cur") )
+            ;;
+        init)
+            COMPREPLY=( $(compgen -W "$(_ds_apps)" -- $cur) )
+            ;;
+        runcfg)
+            local cfgscripts="apache2 get-ssl-cert mount_tmp_on_ram mysql phpmyadmin set_prompt ssmtp"
+            cfgscripts+=" $(_ds_custom_cfgscripts)"
+            COMPREPLY=( $(compgen -W "$cfgscripts" -- $cur) )
+            ;;
+        *)  _ds_custom_completion $prev $cur
+            ;;
+    esac
+}
+
+_ds_load_config() {
+    DSDIR=${DSDIR:-$HOME/.ds}
+    [[ -f $DSDIR/config.sh ]] || return
+    source $DSDIR/config.sh
+}
+
+_ds_load_settings() {
+    _ds_load_config
+    local container='.'
+    [[ "${COMP_WORDS[1]}" == '@' ]] && [[ $COMP_CWORD -gt 1 ]] && container="$CONTAINERS/${COMP_WORDS[2]}"
+    [[ "${COMP_WORDS[2]}" == '@' ]] && [[ $COMP_CWORD -gt 2 ]] && container="$CONTAINERS/${COMP_WORDS[3]}"
+    source $container/settings.sh
+}
+
+_ds_commands() {
+    local commands="version start stop restart shell exec remove"
+    commands+=" build config create help info init runcfg snapshot"
+    commands+=" $(_ds_custom_commands)"
+    echo $commands
 }
 
 _ds_custom_commands() {
+    _ds_load_settings
     local commands=""
-    source ./settings.sh
-    [[ -d $APP_DIR/cmd/ ]] && commands=$(ls $APP_DIR/cmd/)
+    [[ -d $APPS/$APP/cmd/ ]] && commands=$(ls $APPS/$APP/cmd/)
     commands="${commands//.sh/}"
     echo $commands
 }
 
+_ds_apps() {
+    _ds_load_config
+    [[ -n $APPS ]] || return
+    local apps=$(ls $APPS)
+    echo $apps
+}
+
+_ds_containers() {
+    _ds_load_config
+    [[ -n $CONTAINERS ]] || return
+    local containers=$(ls $CONTAINERS)
+    containers=$(echo $containers | sed -e 's/ / @/g')
+    [[ -n "$containers" ]] && containers="@$containers"
+    echo $containers
+}
+
 _ds_custom_cfgscripts() {
+    _ds_load_settings
     local cfgscripts=""
-    source ./settings.sh
-    [[ -d $APP_DIR/config/ ]] && cfgscripts=$(ls $APP_DIR/config/)
+    [[ -d $APPS/$APP/config/ ]] && cfgscripts=$(ls $APPS/$APP/config/)
     cfgscripts="${cfgscripts//.sh/}"
     echo $cfgscripts
 }
@@ -55,13 +107,13 @@ _ds_custom_completion() {
         return $?
     }
 
-    local cmd=$1
+    local prev=$1
     local cur=$2
-    local prev=$3
+    local cmd=$prev
 
-    source ./settings.sh
-    [[ -f $APP_DIR/bash-completion.sh ]] && source $APP_DIR/bash-completion.sh || return
+    _ds_load_settings
+    [[ -f $APPS/$APP/bash-completion.sh ]] && source $APPS/$APP/bash-completion.sh || return
     _ds_function_exists "_ds_$cmd" && _ds_$cmd $cur $prev
 }
 
-complete -F _ds ds docker.sh src/docker.sh
+complete -F _ds ds docker.sh sh/docker.sh
