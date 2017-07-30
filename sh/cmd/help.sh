@@ -46,7 +46,7 @@ The commands are listed below:
         Build the image, create the container, and configure
         the guest system inside the container.
 
-    runcfg <cfg>
+    runcfg [<cfg>]
         Run a configuration script inside the container.
 
     start, stop, restart
