@@ -125,6 +125,7 @@ container. The framework will look for a custom command named
 
  - `$APPS/<app>/cmd/command.sh`
     (by default `/opt/docker-scripts/<app>/cmd/command.sh`)
+ - `$DSDIR/cmd/command.sh` (by default `~/.ds/cmd/command.sh`)
  - `$CONTAINERS/<container>/cmd/command.sh`
     (by default `/var/ds/<container>/cmd/command.sh`)
 
@@ -169,9 +170,9 @@ it before the new function is defined, like this:
     ds create
     ds config
 
-    ds @wsproxy domains-add moodle1-example-org moodle1.example.org
-    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org --test
-    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org
+    ds wsproxy add
+    ds wsproxy ssl-cert -t
+    ds wsproxy ssl-cert
 
 
 ### Installing ShellInABox
@@ -185,10 +186,9 @@ it before the new function is defined, like this:
     ds create
     ds config
 
-    source ds cd @wsproxy
-    ds domains-add shell1-example-org shell1.example.org
-    ds get-ssl-cert user@example.org shell1.example.org --test
-    ds get-ssl-cert user@example.org shell1.example.org
+    ds @wsproxy domains-add shell1-example-org shell1.example.org
+    ds @wsproxy get-ssl-cert user@example.org shell1.example.org --test
+    ds @wsproxy get-ssl-cert user@example.org shell1.example.org
 
 
 ### Installing SchoolTool

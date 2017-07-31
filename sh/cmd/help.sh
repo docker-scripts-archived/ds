@@ -69,7 +69,7 @@ More information may be found in the ds(1) man page.
 _EOF
 
     local cmd cmd_help
-    for cmd_file in $APP_DIR/cmd/*.sh ./cmd/*.sh; do
+    for cmd_file in $APP_DIR/cmd/*.sh $DSDIR/cmd/*.sh ./cmd/*.sh; do
         [[ -f "$cmd_file" ]] || continue
         source "$cmd_file"
         cmd=$(basename "${cmd_file%%.sh}")
