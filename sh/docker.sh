@@ -50,13 +50,16 @@ cmd_cd() {
 call() {
     local cmd=$1; shift
 
-    # load the generic command file
+    # load the installation command file
     [[ -f "$LIBDIR/${cmd//_//}.sh" ]] && source "$LIBDIR/${cmd//_//}.sh"
 
-    # load the specific command file
+    # load the application command file
     [[ -f "$APP_DIR/${cmd//_//}.sh" ]] && source "$APP_DIR/${cmd//_//}.sh"
 
-    # load the local command file
+    # load the environment command file
+    [[ -f "$DSDIR/${cmd//_//}.sh" ]] && source "$DSDIR/${cmd//_//}.sh"
+
+    # load the container command file
     [[ -f "${cmd//_//}.sh" ]] && source "${cmd//_//}.sh"
 
     # run the command

@@ -42,7 +42,7 @@ _ds()
             cfgscripts+=" $(_ds_custom_cfgscripts)"
             COMPREPLY=( $(compgen -W "$cfgscripts" -- $cur) )
             ;;
-        *)  _ds_custom_completion $prev $cur
+        *)  _ds_custom_completion "$prev" "$cur"
             ;;
     esac
 }
@@ -76,9 +76,17 @@ _ds_commands() {
 
 _ds_custom_commands() {
     local commands=""
-    local appdir=$(_ds_app_dir)
-    [[ -d $appdir/cmd/ ]] && commands=$(ls $appdir/cmd/)
-    commands="${commands//.sh/}"
+
+    local cmdlist=""
+    local dir=${DSDIR:-$HOME/.ds}
+    [[ -d $dir/cmd/ ]] && cmdlist=$(ls $dir/cmd/)
+    commands+=" ${cmdlist//.sh/}"
+
+    cmdlist=""
+    dir=$(_ds_app_dir)
+    [[ -d $dir/cmd/ ]] && cmdlist=$(ls $dir/cmd/)
+    commands+=" ${cmdlist//.sh/}"
+
     echo $commands
 }
 
