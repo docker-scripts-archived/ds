@@ -47,18 +47,24 @@ _ds()
     esac
 }
 
-_ds_load_config() {
-    DSDIR=${DSDIR:-$HOME/.ds}
-    [[ -f $DSDIR/config.sh ]] || return
-    source $DSDIR/config.sh
+_ds_get_var() {
+    local var=$1
+    local file=$2
+    cat $file | grep "${var}=" | sed -e "s/${var}=//" | tr -d "'"'"'' '
 }
 
-_ds_load_settings() {
-    _ds_load_config
-    local container='.'
-    [[ "${COMP_WORDS[1]}" == '@' ]] && [[ $COMP_CWORD -gt 1 ]] && container="$CONTAINERS/${COMP_WORDS[2]}"
-    [[ "${COMP_WORDS[2]}" == '@' ]] && [[ $COMP_CWORD -gt 2 ]] && container="$CONTAINERS/${COMP_WORDS[3]}"
-    source $container/settings.sh
+_ds_container_dir() {
+    local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
+    local container_dir='.'
+    [[ "${COMP_WORDS[1]}" == '@' ]] && [[ $COMP_CWORD -gt 1 ]] && container_dir="$CONTAINERS/${COMP_WORDS[2]}"
+    [[ "${COMP_WORDS[2]}" == '@' ]] && [[ $COMP_CWORD -gt 2 ]] && container_dir="$CONTAINERS/${COMP_WORDS[3]}"
+    echo "$container_dir"
+}
+
+_ds_app_dir() {
+    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
+    local APP=$(_ds_get_var APP $(_ds_container_dir)/settings.sh)
+    echo "$APPS/$APP"
 }
 
 _ds_commands() {
@@ -69,22 +75,22 @@ _ds_commands() {
 }
 
 _ds_custom_commands() {
-    _ds_load_settings
     local commands=""
-    [[ -d $APPS/$APP/cmd/ ]] && commands=$(ls $APPS/$APP/cmd/)
+    local appdir=$(_ds_app_dir)
+    [[ -d $appdir/cmd/ ]] && commands=$(ls $appdir/cmd/)
     commands="${commands//.sh/}"
     echo $commands
 }
 
 _ds_apps() {
-    _ds_load_config
+    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
     [[ -n $APPS ]] || return
     local apps=$(ls $APPS)
     echo $apps
 }
 
 _ds_containers() {
-    _ds_load_config
+    local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
     [[ -n $CONTAINERS ]] || return
     local containers=$(ls $CONTAINERS)
     containers=$(echo $containers | sed -e 's/ / @/g')
@@ -93,9 +99,8 @@ _ds_containers() {
 }
 
 _ds_custom_cfgscripts() {
-    _ds_load_settings
     local cfgscripts=""
-    [[ -d $APPS/$APP/config/ ]] && cfgscripts=$(ls $APPS/$APP/config/)
+    [[ -d $(_ds_app_dir)/config/ ]] && cfgscripts=$(ls $(_ds_app_dir)/config/)
     cfgscripts="${cfgscripts//.sh/}"
     echo $cfgscripts
 }
@@ -111,9 +116,9 @@ _ds_custom_completion() {
     local cur=$2
     local cmd=$prev
 
-    _ds_load_settings
-    [[ -f $APPS/$APP/bash-completion.sh ]] && source $APPS/$APP/bash-completion.sh || return
-    _ds_function_exists "_ds_$cmd" && _ds_$cmd $cur $prev
+    local file=$(_ds_app_dir)/bash-completion.sh
+    [[ -f $file ]] && source $file || return
+    _ds_function_exists "_ds_$cmd" && _ds_$cmd "$cur" "$prev"
 }
 
 complete -F _ds ds docker.sh sh/docker.sh
