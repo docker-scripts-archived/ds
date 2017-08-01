@@ -155,16 +155,24 @@ main() {
     load_ds_config
 
     # handle some basic options and commands
-    local arg1=$1
+    local arg1=$1 ; shift
     case $arg1 in
         '')            ds_info ;              exit 0 ;;
         -v|--version)  cmd_version "$@" ;     exit 0 ;;
         -h|--help)     call cmd_help "$@" ;   exit 0 ;;
         pull|init)     call cmd_$arg1 "$@" ;  exit 0 ;;
-        @*)            cd_to_container_dir $arg1 ; shift ;;
-        -x)            set -x ; shift
-                       [[ "${1:0:1}" == '@' ]] && cd_to_container_dir $1 && shift
-                       ;;
+        @*)
+            cd_to_container_dir $arg1
+            arg1=$1 ; shift
+            ;;
+        -x)
+            set -x
+            arg1=$1 ; shift
+            if [[ "${arg1:0:1}" == '@' ]]; then
+                cd_to_container_dir $arg1
+                arg1=$1 ; shift
+            fi
+            ;;
     esac
 
     # load container settings.sh
@@ -178,7 +186,7 @@ main() {
     [[ -f ds.sh ]] && source ds.sh
 
     # run the given command
-    local command=$1 ; shift
+    local command=$arg1
     case $command in
         start|stop|restart|shell|exec|remove)
             cmd_$command "$@"
