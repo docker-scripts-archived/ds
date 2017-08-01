@@ -1,0 +1,291 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "DS" "1" "August 2017" "dashohoxha" "DockerScripts"
+.
+.SH "NAME"
+\fBds\fR \- Docker Scripts
+.
+.SH "SYNOPSIS"
+\fBds [\-x] [@<container>] <command> [<arg>\.\.\.]\fR
+.
+.SH "DESCRIPTION"
+DockerScripts is a shell script framework for Docker\.
+.
+.P
+Each container is like a virtual machine that has an application installed inside\. Each container has a base directory where the settings of the container are stored (in the file \fBsettings\.sh\fR)\. The command \fBds\fR picks the parameters that it needs from the file \fBsettings\.sh\fR in the container\'s directory\.
+.
+.P
+Normally the commands are issued from inside the container\'s directory, however the option \fB@<container>\fR can be used to specify the context of the command\.
+.
+.P
+The option \fB\-x\fR can be used for debugging\.
+.
+.SH "COMMANDS"
+.
+.IP "\(bu" 4
+\fBpull <app> [<branch>]\fR
+.
+.IP
+Clone or pull \fBhttps://github\.com/docker\-scripts/<app>\fR to \fB/opt/docker\-scripts/<app>\fR\. A certain branch can be specified as well\. When a branch is given, then it is saved to \fB/opt/docker\-scripts/<app>\-<branch>\fR\.
+.
+.IP "\(bu" 4
+\fBinit <app> [@<container>]\fR
+.
+.IP
+Initialize a container directory by getting the file \fBsettings\.sh\fR from the given app directory\. If the second argument is missing, the current directory will be used to initialize the container, otherwise it will be done on \fB/var/ds/<container>\fR\.
+.
+.IP "\(bu" 4
+\fBinfo\fR
+.
+.IP
+Show some info about the container of the current directory\.
+.
+.IP "\(bu" 4
+\fBbuild\fR, \fBcreate\fR, \fBconfig\fR
+.
+.IP
+Build the image, create the container, and configure the guest system inside the container\.
+.
+.IP "\(bu" 4
+\fBruncfg [<cfg>]\fR
+.
+.IP
+Run a configuration script inside the container\.
+.
+.IP "\(bu" 4
+\fBstart\fR, \fBstop\fR, \fBrestart\fR
+.
+.IP
+Start, stop and restart the container\.
+.
+.IP "\(bu" 4
+\fBshell\fR
+.
+.IP
+Get a shell on the container\.
+.
+.IP "\(bu" 4
+\fBexec\fR
+.
+.IP
+Execute a command from outside the container\.
+.
+.IP "\(bu" 4
+\fBsnapshot\fR
+.
+.IP
+Make a snapshot of the container\.
+.
+.IP "\(bu" 4
+\fBremove\fR
+.
+.IP
+Remove the container and the image\.
+.
+.IP "\(bu" 4
+\fBhelp\fR
+.
+.IP
+Display a help message\.
+.
+.IP "" 0
+.
+.SH "FILES"
+\fB~/\.ds/\fR
+.
+.IP "" 4
+.
+.nf
+
+      The default ds config directory\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+\fB~/\.ds/config\.sh\fR
+.
+.IP "" 4
+.
+.nf
+
+      The configuration file\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+\fB~/\.ds/ds\.sh\fR
+.
+.IP "" 4
+.
+.nf
+
+      Optional customization file\.
+.
+.fi
+.
+.IP "" 0
+.
+.P
+\fB\./settings\.sh\fR
+.
+.IP "" 4
+.
+.nf
+
+      It is located in directory of the container and keeps the
+      settings of the container and the settings of the
+      application installed inside it\.
+.
+.fi
+.
+.IP "" 0
+.
+.SH "ENVIRONMENT"
+\fBDSDIR\fR
+.
+.IP "" 4
+.
+.nf
+
+      Overrides the default ds config directory (~/\.ds/)\.
+.
+.fi
+.
+.IP "" 0
+.
+.SH "CUSTOMIZATION"
+The functions of DockerScripts can be redifined or customized without having to touch the code of the installed script\. The framework does this by including optional customization scripts, if it finds them\. These scripts are included (sourced) in this order:
+.
+.IP "\(bu" 4
+\fB$DSDIR/ds\.sh\fR (by default \fB~/\.ds/ds\.sh\fR)
+.
+.IP "\(bu" 4
+\fB$APPS/<app>/ds\.sh\fR (by default \fB/opt/docker\-scripts/<app>/ds\.sh\fR)
+.
+.IP "\(bu" 4
+\fB$CONTAINERS/<container>/ds\.sh\fR (by default \fB/var/ds/<container>/ds\.sh\fR)
+.
+.IP "" 0
+.
+.P
+A newly defined function will override a previously defined one\. To reuse the previous function inside the new one (if this makes sense), we can rename it before the new function is defined, like this: \fBrename_function fun1 orig_fun1\fR\.
+.
+.P
+Also, new commands can be defined for each application and for each container\. The framework will look for a custom command named \fBcmd_command\fR in these places:
+.
+.IP "\(bu" 4
+\fB$APPS/<app>/cmd/command\.sh\fR (by default \fB/opt/docker\-scripts/<app>/cmd/command\.sh\fR)
+.
+.IP "\(bu" 4
+\fB$DSDIR/cmd/command\.sh\fR (by default \fB~/\.ds/cmd/command\.sh\fR)
+.
+.IP "\(bu" 4
+\fB$CONTAINERS/<container>/cmd/command\.sh\fR (by default \fB/var/ds/<container>/cmd/command\.sh\fR)
+.
+.IP "" 0
+.
+.P
+These files will be included (sourced) if they exist\. If the name of a newly defined command is the same as an existing command, it will override the existing one\. To reuse the previous command definition inside the definition of new one (if this makes sense), we can rename it before the new function is defined, like this: \fBrename_function cmd_command1 orig_cmd_command1\fR\.
+.
+.SH "INSTALLATION"
+.
+.nf
+
+git clone https://github\.com/docker\-scripts/ds /opt/docker\-scripts/ds
+cd /opt/docker\-scripts/ds/
+make install
+ds
+ds \-h
+.
+.fi
+.
+.SH "EXAMPLES"
+.
+.SS "Installing Web Server Proxy"
+.
+.nf
+
+ds pull wsproxy
+ds init wsproxy @wsproxy
+source ds cd @wsproxy   # (or: cd /var/ds/wsproxy/)
+vim settings\.sh
+ds build
+ds create
+ds config
+.
+.fi
+.
+.SS "Installing Moodle"
+.
+.nf
+
+ds pull moodle
+ds init moodle @moodle1
+
+source ds cd @moodle1   # (or: cd /var/ds/moodle1/)
+vim settings\.sh
+ds build
+ds create
+ds config
+
+ds wsproxy add
+ds wsproxy ssl\-cert \-t
+ds wsproxy ssl\-cert
+.
+.fi
+.
+.SS "Installing ShellInABox"
+.
+.nf
+
+ds pull shellinabox
+ds init shellinabox @shell1
+
+source ds cd @shell1
+vim settings\.sh
+ds build
+ds create
+ds config
+
+ds @wsproxy domains\-add shell1\-example\-org shell1\.example\.org
+ds @wsproxy get\-ssl\-cert user@example\.org shell1\.example\.org \-\-test
+ds @wsproxy get\-ssl\-cert user@example\.org shell1\.example\.org
+.
+.fi
+.
+.SS "Installing SchoolTool"
+.
+.nf
+
+ds pull schooltool
+ds init schooltool @school1
+
+source ds cd @school1
+vim settings\.sh
+ds build
+ds create
+ds config
+
+source ds cd @wsproxy
+ds domains\-add school1\-example\-org school1\.example\.org
+ds get\-ssl\-cert user@example\.org school1\.example\.org \-\-test
+ds get\-ssl\-cert user@example\.org school1\.example\.org
+.
+.fi
+.
+.SH "AUTHOR"
+Copyright (C) 2017 Dashamir Hoxha (dashohoxha@gmail\.com)\. The code is on GitHub at \fIhttps://github\.com/docker\-scripts/ds\fR\.
+.
+.SH "COPYLEFT"
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\.
+.
+.P
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\. See the GNU General Public License for more details\.
+.
+.P
+You should have received a copy of the GNU General Public License along with this program\. If not, see \fIhttp://www\.gnu\.org/licenses/\fR\.
