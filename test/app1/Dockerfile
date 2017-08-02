@@ -10,5 +10,6 @@ RUN find /etc/systemd/system \
          -exec rm \{} \;
 RUN systemctl set-default multi-user.target
 CMD ["/sbin/init"]
+
 RUN apt-get update ; apt-get -y upgrade
 WORKDIR /host
