@@ -4,7 +4,7 @@ test_description='Basic checks'
 source "$(dirname "$0")"/setup.sh
 
 test_expect_success 'ds' '
-    [[ "$(ds | grep APPS)" == "APPS=$TEMP_DIR/docker-scripts" ]]
+    [[ "$(ds | grep APPS)" == "APPS=$APPS" ]]
 '
 
 test_expect_success 'ds -v ; ds --version' '

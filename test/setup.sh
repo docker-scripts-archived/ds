@@ -22,3 +22,6 @@ GITHUB=https://github.com/docker-scripts
 APPS=$TEMP_DIR/docker-scripts
 CONTAINERS=$TEMP_DIR/containers
 _EOF
+GITHUB="https://github.com/docker-scripts"
+APPS="$TEMP_DIR/docker-scripts"
+CONTAINERS="$TEMP_DIR/containers"
