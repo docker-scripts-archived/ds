@@ -3,36 +3,36 @@
 test_description='Test: ds init'
 source "$(dirname "$0")"/setup.sh
 
-test_expect_success 'ds init (with target)' '
-    rm -rf $CONTAINERS/wsproxy1 &&
-    ds pull wsproxy &&
-    ds init wsproxy @wsproxy1 &&
-    [[ -d $CONTAINERS/wsproxy1 ]] &&
-    [[ -f $CONTAINERS/wsproxy1/settings.sh ]]
+test_expect_success 'ds init ds/test/app1 @test1' '
+    rm -rf $CONTAINERS/test1 &&
+    ds pull ds &&
+    ds init ds/test/app1 @test1 &&
+    [[ -d $CONTAINERS/test1 ]] &&
+    [[ -f $CONTAINERS/test1/settings.sh ]]
 '
 
-test_expect_success 'ds init (current dir)' '
-    rm -rf $CONTAINERS/wsproxy2 &&
-    mkdir -p  $CONTAINERS/wsproxy2 &&
-    cd $CONTAINERS/wsproxy2 &&
-    ds init wsproxy &&
-    [[ -f $CONTAINERS/wsproxy2/settings.sh ]]
+test_expect_success 'ds init ds/test/app1' '
+    rm -rf $CONTAINERS/test1 &&
+    mkdir -p  $CONTAINERS/test1 &&
+    cd $CONTAINERS/test1 &&
+    ds init ds/test/app1 &&
+    [[ -f $CONTAINERS/test1/settings.sh ]]
 '
 
 test_expect_success 'ds init (already exists)' '
-    [[ -f $CONTAINERS/wsproxy1/settings.sh ]] &&
-    cd $CONTAINERS/wsproxy1 &&
-    ds init wsproxy 2>&1 | grep "already exists" &&
-    ds init wsproxy @wsproxy2 2>&1 | grep "already exists"
+    [[ -f $CONTAINERS/test1/settings.sh ]] &&
+    cd $CONTAINERS/test1 &&
+    ds init ds/test/app1 2>&1 | grep "already exists" &&
+    ds init ds/test/app1 @test1 2>&1 | grep "already exists"
 '
 
 test_expect_success 'ds init (wrong params)' '
-    rm -rf $CONTAINERS/wsproxy1 &&
-    mkdir -p $APPS/wsproxy2 &&
+    rm -rf $CONTAINERS/test1 &&
+    mkdir -p $APPS/test1 &&
     ds init 2>&1 | grep "Usage:" &&
-    ds init wsproxy1 2>&1 | grep "Cannot find directory" &&
-    ds init wsproxy wsproxy1 2>&1 | grep "Usage:" &&
-    ds init wsproxy2 @wsproxy1 2>&1 | grep "There is no file"
+    ds init ds1 2>&1 | grep "Cannot find directory" &&
+    ds init ds/test/app1 test11 2>&1 | grep "Usage:" &&
+    ds init ds/test @test1 2>&1 | grep "There is no file"
 '
 
 test_done
