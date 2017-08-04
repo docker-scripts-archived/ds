@@ -33,7 +33,13 @@ Clone or pull \fBhttps://github\.com/docker\-scripts/<app>\fR to \fB/opt/docker\
 \fBinit <app> [@<container>]\fR
 .
 .IP
-Initialize a container directory by getting the file \fBsettings\.sh\fR from the given app directory\. If the second argument is missing, the current directory will be used to initialize the container, otherwise it will be done on \fB/var/ds/<container>\fR\.
+Initialize a container directory by getting the file \fBsettings\.sh\fR from the given app directory\.
+.
+.IP
+The argument \fIapp\fR can be a subdirectory of \fB/opt/docker\-scripts/\fR, or any other directory, absolute or relative, that can be reached from the container\'s directory\.
+.
+.IP
+If the second argument is missing, the current directory will be used for initializing the container\. If \fIcontainer\fR starts with \'\./\' it will be relative to the current directory\. If \fIcontainer\fR starts with \'/\', it will be an absolute path\. Otherwise, it will be done on \fB/var/ds/<container>\fR\.
 .
 .IP "\(bu" 4
 \fBinfo\fR

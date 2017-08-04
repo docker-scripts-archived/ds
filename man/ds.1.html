@@ -132,9 +132,17 @@
 <li><p><code>init &lt;app> [@&lt;container>]</code></p>
 
 <p>  Initialize a container directory by getting the file <code>settings.sh</code>
-  from the given app directory. If the second argument is missing,
-  the current directory will be used to initialize the container,
-  otherwise it will be done on <code>/var/ds/&lt;container></code>.</p></li>
+  from the given app directory.</p>
+
+<p>  The argument <var>app</var> can be a subdirectory of
+  <code>/opt/docker-scripts/</code>, or any other directory, absolute or
+  relative, that can be reached from the container's directory.</p>
+
+<p>  If the second argument is missing, the current directory will be
+  used for initializing the container. If <var>container</var> starts with
+  './' it will be relative to the current directory. If <var>container</var>
+  starts with '/', it will be an absolute path. Otherwise, it will
+  be done on <code>/var/ds/&lt;container></code>.</p></li>
 <li><p><code>info</code></p>
 
 <p>  Show some info about the container of the current directory.</p></li>

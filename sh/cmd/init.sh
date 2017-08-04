@@ -2,9 +2,17 @@ cmd_init_help() {
     cat <<_EOF
     init <app> [@<container>]
         Initialize a container directory by getting the file 'settings.sh'
-        from the given app directory. If the second argument is missing,
-        the current directory will be used to initialize the container,
-        otherwise it will be done on '$CONTAINERS/<container>'.
+        from the given app directory.
+
+        The argument <app> can be a subdirectory of '$APPS', or any other
+        directory, absolute or relative, that can be reached from the
+        container's directory.
+
+        If the second argument is missing, the current directory will be used
+        for initializing the container. If <container> starts with './'
+        it will be relative to the current directory. If <container> starts
+        with '/', it will be an absolute path. Otherwise, it will be done on
+        '$CONTAINERS/<container>'.
 
 _EOF
 }
