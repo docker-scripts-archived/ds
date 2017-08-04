@@ -30,7 +30,7 @@ test_expect_success 'ds init (wrong params)' '
     rm -rf $CONTAINERS/test1 &&
     mkdir -p $APPS/test1 &&
     ds init 2>&1 | grep "Usage:" &&
-    ds init ds1 2>&1 | grep "Cannot find directory" &&
+    ds init ds1 2>&1 | grep "Cannot find the directory of" &&
     ds init ds/test/app1 test11 2>&1 | grep "Usage:" &&
     ds init ds/test @test1 2>&1 | grep "There is no file"
 '

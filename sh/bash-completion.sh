@@ -64,7 +64,8 @@ _ds_container_dir() {
 _ds_app_dir() {
     local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
     local APP=$(_ds_get_var APP $(_ds_container_dir)/settings.sh)
-    echo "$APPS/$APP"
+    [[ -d "$APPS/$APP" ]] && echo "$APPS/$APP" && return
+    [[ -d "$APP" ]] && echo "$APP" && return
 }
 
 _ds_commands() {

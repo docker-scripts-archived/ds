@@ -127,8 +127,9 @@ load_container_settings() {
         || fail "No APP defined on ./settings.sh"
 
     APP_DIR="$APPS/$APP"
+    [[ -d $APP_DIR ]] || APP_DIR="$APP"
     [[ -d $APP_DIR ]] \
-        || fail "The app directory '$APP_DIR' does not exist."
+        || fail "Cannot find the directory of '$APP'."
 
     [[ -n $IMAGE ]] \
         || fail "No IMAGE defined on ./settings.sh"
