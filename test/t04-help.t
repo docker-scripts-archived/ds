@@ -25,8 +25,8 @@ test_expect_success 'ds help' '
 test_expect_success 'ds -x help' '
     cd $CONTAINERS/wsproxy &&
     [[ "$(ds -x help 2>&1 | grep + | wc -l)" -gt 100 ]] &&
-    [[ "$(ds -x @wsproxy help 2>&1 | grep + | wc -l)" -gt 100 ]]
-    ds @wsproxy -x help 2>&1 | grep "Cannot find command"
+    [[ "$(ds -x @wsproxy help 2>&1 | grep + | wc -l)" -gt 30 ]] &&
+    [[ "$(ds @wsproxy -x help 2>&1 | grep + | wc -l)" -gt 100 ]]
 '
 
 test_done
