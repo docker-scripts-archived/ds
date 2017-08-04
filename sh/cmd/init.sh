@@ -18,7 +18,8 @@ cmd_init() {
     local container=$2
     if [[ -n $container ]]; then
         [[ "${container:0:1}" == '@' ]] || fail "Usage:\n$(cmd_init_help)"
-        local dir="$CONTAINERS/${container:1}"
+        local dir="${container:1}"
+        [[ "${dir:0:2}" == './' || "${dir:0:1}" == '/' ]] || dir="$CONTAINERS/$dir"
         mkdir -p $dir
         cd $dir
     fi

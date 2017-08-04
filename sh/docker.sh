@@ -111,8 +111,9 @@ _EOF
 
 cd_to_container_dir() {
     local arg1=$1
-    local dir="$CONTAINERS/${arg1:1}"
-    [[ -d "$dir" ]] || fail "Container directory '$dir' does not exist."
+    local dir="${arg1:1}"
+    [[ "${dir:0:2}" == './' || "${dir:0:1}" == '/' ]] || dir="$CONTAINERS/$dir"
+    [[ -d "$dir" ]] || fail "Container directory '$arg1' does not exist."
     cd "$dir"
 }
 
