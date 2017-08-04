@@ -11,72 +11,32 @@ _ds()
     local prev=${COMP_WORDS[COMP_CWORD-1]}  ## $3
     local preprev=${COMP_WORDS[COMP_CWORD-2]}
 
-    [[ "$preprev" == '@' ]] && COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) ) && return
+    [[ "$preprev" == '@' ]] && _ds_commands $cur && return
 
     case $prev in
-        ds|docker.sh|sh/docker.sh)
+        ds)
             case $cur in
-                -*) COMPREPLY=( $(compgen -W "-x -v --version -h --help" -- $cur) )
-                    ;;
-                @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- $cur) )
-                    ;;
-                *)  COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) )
-                    ;;
+                -*) COMPREPLY=( $(compgen -W "-x -v --version -h --help" -- $cur) ) ;;
+                @)  _ds_containers $cur ;;
+                *)  _ds_commands $cur ;;
             esac
             ;;
         -x)
             case $cur in
-                @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- $cur) )
-                    ;;
-                *)  COMPREPLY=( $(compgen -W "$(_ds_commands)" -- $cur) )
-                    ;;
+                @)  _ds_containers $cur ;;
+                *)  _ds_commands $cur ;;
             esac
             ;;
-        @)  COMPREPLY=( $(compgen -W "$(_ds_containers)" -- "@$cur") )
-            ;;
-        init)
-            COMPREPLY=( $(compgen -W "$(_ds_apps)" -- $cur) )
-            ;;
-        runcfg)
-            local cfgscripts="apache2 get-ssl-cert mount_tmp_on_ram mysql phpmyadmin set_prompt ssmtp"
-            cfgscripts+=" $(_ds_custom_cfgscripts)"
-            COMPREPLY=( $(compgen -W "$cfgscripts" -- $cur) )
-            ;;
-        *)  _ds_custom_completion "$prev" "$cur"
-            ;;
+        @)       _ds_containers "@$cur" ;;
+        init)    _ds_cmd_init $cur ;;
+        runcfg)  _ds_cmd_runcfg $cur ;;
+        *)       _ds_custom_completion "$prev" "$cur" ;;
     esac
-}
-
-_ds_get_var() {
-    local var=$1
-    local file=$2
-    cat $file | grep "${var}=" | sed -e "s/${var}=//" | tr -d "'"'"'' '
-}
-
-_ds_container_dir() {
-    local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
-    local container_dir='.'
-    [[ "${COMP_WORDS[1]}" == '@' ]] && [[ $COMP_CWORD -gt 1 ]] && container_dir="$CONTAINERS/${COMP_WORDS[2]}"
-    [[ "${COMP_WORDS[2]}" == '@' ]] && [[ $COMP_CWORD -gt 2 ]] && container_dir="$CONTAINERS/${COMP_WORDS[3]}"
-    echo "$container_dir"
-}
-
-_ds_app_dir() {
-    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
-    local APP=$(_ds_get_var APP $(_ds_container_dir)/settings.sh)
-    [[ -d "$APPS/$APP" ]] && echo "$APPS/$APP" && return
-    [[ -d "$APP" ]] && echo "$APP" && return
 }
 
 _ds_commands() {
     local commands="version start stop restart shell exec remove"
     commands+=" build config create help info init runcfg snapshot"
-    commands+=" $(_ds_custom_commands)"
-    echo $commands
-}
-
-_ds_custom_commands() {
-    local commands=""
 
     local cmdlist=""
     local dir=${DSDIR:-$HOME/.ds}
@@ -88,30 +48,41 @@ _ds_custom_commands() {
     [[ -d $dir/cmd/ ]] && cmdlist=$(ls $dir/cmd/)
     commands+=" ${cmdlist//.sh/}"
 
-    echo $commands
-}
-
-_ds_apps() {
-    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
-    [[ -n $APPS ]] || return
-    local apps=$(ls $APPS)
-    echo $apps
+    COMPREPLY=( $(compgen -W "$commands" -- $1) )
 }
 
 _ds_containers() {
-    local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
-    [[ -n $CONTAINERS ]] || return
-    local containers=$(ls $CONTAINERS)
+    local cur=$1
+    local containers=''
+    if [[ "${cur:1:1}" == '/' || "${cur:1:2}" == './' ]]; then
+        compopt -o nospace
+        containers=$(compgen -o dirnames -- ${cur:1})
+    else
+        local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
+        [[ -n $CONTAINERS ]] || return
+        containers=$(ls $CONTAINERS)
+    fi
     containers=$(echo $containers | sed -e 's/ / @/g')
     [[ -n "$containers" ]] && containers="@$containers"
-    echo $containers
+    COMPREPLY=( $(compgen -W "$containers" -- $cur) )
 }
 
-_ds_custom_cfgscripts() {
-    local cfgscripts=""
-    [[ -d $(_ds_app_dir)/config/ ]] && cfgscripts=$(ls $(_ds_app_dir)/config/)
-    cfgscripts="${cfgscripts//.sh/}"
-    echo $cfgscripts
+_ds_cmd_init() {
+    #compopt -o plusdirs
+    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
+    [[ -n $APPS ]] || return
+    COMPREPLY=( $(compgen -W "$(ls $APPS)" -- $1) )
+}
+
+_ds_cmd_runcfg() {
+    local cfgscripts="apache2 get-ssl-cert mount_tmp_on_ram mysql phpmyadmin set_prompt ssmtp"
+
+    local cfglist=""
+    local dir=$(_ds_app_dir)/config/
+    [[ -d $dir ]] && cfglist=$(ls $dir)
+    cfgscripts+=" ${cfglist//.sh/}"
+
+    COMPREPLY=( $(compgen -W "$cfgscripts" -- $1) )
 }
 
 _ds_custom_completion() {
@@ -130,4 +101,36 @@ _ds_custom_completion() {
     _ds_function_exists "_ds_$cmd" && _ds_$cmd "$cur" "$prev"
 }
 
-complete -F _ds ds docker.sh sh/docker.sh
+# --------------------------------------------
+
+_ds_get_var() {
+    local var=$1
+    local file=$2
+    [[ -f $file ]] || return
+    cat $file | grep "${var}=" | sed -e "s/${var}=//" | tr -d "'"'"'' '
+}
+
+_ds_app_dir() {
+    local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
+    local APP=$(_ds_get_var APP $(_ds_container_dir)/settings.sh)
+    [[ -d "$APPS/$APP" ]] && echo "$APPS/$APP" && return
+    [[ -d "$APP" ]] && echo "$APP" && return
+}
+
+_ds_container_dir() {
+    local CONTAINERS=$(_ds_get_var CONTAINERS ${DSDIR:-$HOME/.ds}/config.sh)
+    local dir='.'
+    if [[ "${COMP_WORDS[1]}" == '@' && $COMP_CWORD -gt 1 ]]; then
+        dir="$CONTAINERS/${COMP_WORDS[2]}"
+        [[ -d "$dir" ]] || dir="${COMP_WORDS[2]}"
+    fi
+    if [[ "${COMP_WORDS[2]}" == '@' && $COMP_CWORD -gt 2 ]]; then
+        dir="$CONTAINERS/${COMP_WORDS[3]}"
+        [[ -d "$dir" ]] || dir="${COMP_WORDS[3]}"
+    fi
+    echo "$dir"
+}
+
+# --------------------------------------------
+
+complete -F _ds ds
