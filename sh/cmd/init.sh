@@ -31,7 +31,7 @@ cmd_init() {
     # check app dir
     local app_dir="$APPS/$app"
     [[ -d "$app_dir" ]] || app_dir="$app"
-    [[ -d "$app_dir" ]] || fail "Cannot find the directory of '$app'."
+    [[ -d "$app_dir" ]] || fail "Cannot find the directory of '$app' from '$(pwd)'."
     [[ -f "$app_dir"/settings.sh ]] || fail "There is no file 'settings.sh' on '$app_dir'"
 
     # copy and update settings
