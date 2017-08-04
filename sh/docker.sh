@@ -1,10 +1,5 @@
 #!/bin/bash
 
-set -o pipefail
-VERSION="0.9"
-LIBDIR="$(dirname "$0")"
-source "$LIBDIR/auxiliary.sh"
-
 cmd_version() {
     echo "DockerScripts:$VERSION https://github.com/dashohoxha/ds"
 }
@@ -138,7 +133,13 @@ load_container_settings() {
         || fail "No CONTAINER defined on ./settings.sh"
 }
 
-main() {
+ds() {
+    set -o pipefail
+    VERSION="0.9"
+    LIBDIR="$(dirname "$0")"
+    PROGRAM="${0##*/}"
+    source "$LIBDIR/auxiliary.sh"
+
     # check the docker version
     local version=$(docker --version | cut -d, -f1 | cut -d' ' -f3 | cut -d. -f1)
     [[ "$version" -lt 17 ]] && fail "These scripts are supposed to work with docker 17+"
@@ -151,29 +152,21 @@ main() {
         return
     fi
 
-    PROGRAM="${0##*/}"
-
     # load ~/.ds/config.sh
     load_ds_config
 
     # handle some basic options and commands
     local arg1=$1 ; shift
     case $arg1 in
-        '')            ds_info ;              exit 0 ;;
-        -v|--version)  cmd_version "$@" ;     exit 0 ;;
-        -h|--help)     call cmd_help "$@" ;   exit 0 ;;
-        pull|init)     call cmd_$arg1 "$@" ;  exit 0 ;;
-        @*)
-            cd_to_container_dir $arg1
-            arg1=$1 ; shift
+        '')            ds_info ;              return ;;
+        -v|--version)  cmd_version "$@" ;     return ;;
+        -h|--help)     call cmd_help "$@" ;   return ;;
+        pull|init)     call cmd_$arg1 "$@" ;  return ;;
+
+        -x) exec bash -x ds "$@"
             ;;
-        -x)
-            set -x
-            arg1=$1 ; shift
-            if [[ "${arg1:0:1}" == '@' ]]; then
-                cd_to_container_dir $arg1
-                arg1=$1 ; shift
-            fi
+        @*) cd_to_container_dir $arg1
+            exec bash ds "$@"
             ;;
     esac
 
@@ -199,4 +192,4 @@ main() {
     esac
 }
 
-main "$@"
+ds "$@"
