@@ -7,7 +7,7 @@ _EOF
 }
 
 cmd_runcfg() {
-    local cfg=$1
+    local cfg=$1; shift
     if [[ -z $cfg ]]; then
         echo -e "Usage:\n$(cmd_runcfg_help)"
         _cmd_runcfg_list
@@ -26,7 +26,7 @@ cmd_runcfg() {
     mkdir tmp/
     cp $cfgscript tmp/
     echo -e "\n--> Running configuration script '$cfgscript'"
-    cmd_exec /host/tmp/$(basename $cfgscript)
+    cmd_exec "/host/tmp/$(basename $cfgscript)" "$@"
     rm -rf tmp/
 }
 
