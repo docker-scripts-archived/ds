@@ -1,9 +1,16 @@
 #!/bin/bash -x
 
 source /host/settings.sh
-DOMAIN=${DOMAIN:-example.org}
+DOMAIN=${DOMAIN:-$IMAGE.example.org}
+
+### fix /etc/fstab
+sed -i /etc/fstab -e '#/var/log/apache2#d'
+cat <<EOF >> /etc/fstab
+tmpfs /var/log/apache2 tmpfs defaults,noatime 0 0
+EOF
 
 ### create a configuration file
+mkdir -p /var/www/$IMAGE
 cat <<EOF > /etc/apache2/sites-available/$IMAGE.conf
 <VirtualHost *:80>
         ServerName $DOMAIN
@@ -13,8 +20,8 @@ cat <<EOF > /etc/apache2/sites-available/$IMAGE.conf
 <VirtualHost _default_:443>
         ServerName $DOMAIN
 
-        DocumentRoot /var/www/moodle
-        <Directory /var/www/moodle/>
+        DocumentRoot /var/www/$IMAGE
+        <Directory /var/www/$IMAGE/>
             AllowOverride All
         </Directory>
 
@@ -49,6 +56,7 @@ EOF
 chmod +x /usr/local/sbin/apachemonitor.sh
 
 ### setup a cron job to monitor apache2
+mkdir -p /etc/cron.d/
 cat <<'EOF' > /etc/cron.d/apachemonitor
 * * * * * root /usr/local/sbin/apachemonitor.sh >/dev/null 2>&1
 EOF
