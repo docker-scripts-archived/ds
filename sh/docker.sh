@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cmd_version() {
-    echo "DockerScripts:$VERSION https://github.com/dashohoxha/ds"
+    echo "DockerScripts:$VERSION https://github.com/docker-scripts/ds"
 }
 
 cmd_start() {
@@ -32,7 +32,7 @@ cmd_remove() {
     docker rmi $IMAGE 2>/dev/null
 }
 
-# Whwn the command is 'cd', go to the directory of the given container.
+# When the command is 'cd', go to the directory of the given container.
 # It must be called by sourcing, like this: `. ds cd @container`
 cmd_cd() {
     DSDIR=${DSDIR:-$HOME/.ds}
