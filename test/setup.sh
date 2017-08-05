@@ -1,19 +1,14 @@
 # This file should be sourced by all test-scripts
 
+ulimit=$(ulimit -n)
+ulimit -n 9000
+
 cd "$(dirname "$0")"
 source ./sharness.sh
 
-CODE="$(dirname "$SHARNESS_TEST_DIRECTORY")"
-DS="$CODE"/sh/docker.sh
-[[ ! -x $DS ]] && echo "Could not find docker.sh" &&  exit 1
-
-ds() { "$DS" "$@" ; }
-
-#export HOME="$SHARNESS_TRASH_DIRECTORY"
 TEMP_DIR="$SHARNESS_TEST_DIRECTORY/temp"
 #rm -rf $TEMP_DIR
 export HOME="$TEMP_DIR"
-unset  DSDIR
 export DSDIR="$HOME"/.ds
 
 mkdir -p $DSDIR
@@ -25,3 +20,5 @@ _EOF
 GITHUB="https://github.com/docker-scripts"
 APPS="$TEMP_DIR/docker-scripts"
 CONTAINERS="$TEMP_DIR/containers"
+
+ulimit -n $ulimit
