@@ -111,10 +111,12 @@ _ds_get_var() {
 }
 
 _ds_app_dir() {
+    local container_dir=$(_ds_container_dir)
+    local APP=$(_ds_get_var APP $container_dir/settings.sh)
+    [[ "${APP:0:1}" == '/' ]]  && echo "$APP" && return
+    [[ -d "$container_dir/$APP" ]] && echo "$container_dir/$APP" && return
     local APPS=$(_ds_get_var APPS ${DSDIR:-$HOME/.ds}/config.sh)
-    local APP=$(_ds_get_var APP $(_ds_container_dir)/settings.sh)
     [[ -d "$APPS/$APP" ]] && echo "$APPS/$APP" && return
-    [[ -d "$APP" ]] && echo "$APP" && return
 }
 
 _ds_container_dir() {
