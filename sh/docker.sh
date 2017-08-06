@@ -135,7 +135,7 @@ load_container_settings() {
 
 ds() {
     set -o pipefail
-    VERSION="0.9"
+    VERSION="1.0"
     LIBDIR="$(dirname "$0")"
     PROGRAM="${0##*/}"
     source "$LIBDIR/auxiliary.sh"
