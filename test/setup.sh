@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 source ./sharness.sh
 
 TEMP_DIR="$SHARNESS_TEST_DIRECTORY/temp"
-#rm -rf $TEMP_DIR
+rm -rf $TEMP_DIR
 export HOME="$TEMP_DIR"
 export DSDIR="$HOME"/.ds
 
