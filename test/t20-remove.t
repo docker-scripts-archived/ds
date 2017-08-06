@@ -18,4 +18,12 @@ test_expect_success 'ds @test1 remove' '
     [[ -z "$(docker images --format "{{.Repository}}" | grep ds-test-app1)" ]]
 '
 
+test_expect_success 'ds @test2 remove' '
+    ds @test2 remove &&
+    [[ ! -f $DSDIR/cmd/test2.sh ]]
+'
+
+# cleanup
+rm -rf "$TEMP_DIR"
+
 test_done

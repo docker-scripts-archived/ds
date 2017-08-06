@@ -3,14 +3,14 @@
 test_description='Test: ds pull'
 source "$(dirname "$0")"/setup.sh
 
-test_expect_success 'ds pull wsproxy (cloning)' '
-    rm -rf $APPS/wsproxy &&
-    ds pull wsproxy 2>&1 | grep "Cloning into" &&
-    [[ -d $APPS/wsproxy ]]
+test_expect_success 'ds pull (cloning)' '
+    rm -rf $APPS/ds &&
+    ds pull ds 2>&1 | grep "Cloning into" &&
+    [[ -d $APPS/ds ]]
 '
 
-test_expect_success 'ds pull wsproxy (up to date)' '
-    ds pull wsproxy 2>&1 | grep "Already up-to-date."
+test_expect_success 'ds pull (up to date)' '
+    ds pull ds 2>&1 | grep "Already up-to-date."
 '
 
 test_expect_success 'ds pull (with branch)' '
