@@ -23,6 +23,8 @@ cmd_exec() {
 
 rename_function cmd_remove orig_cmd_remove
 cmd_remove() {
-    rm -f $DSDIR/cmd/$CONTAINER.sh
+    local container_dir=$(basename $(pwd))
+    rm -f $DSDIR/cmd/$container_dir.sh
+
     orig_cmd_remove
 }

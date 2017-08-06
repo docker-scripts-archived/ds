@@ -18,8 +18,7 @@ test_expect_success 'ds help' '
     cd $CONTAINERS/test2 &&
     local helpmsg="$(ds help)" &&
     echo "$helpmsg" | grep "DockerScripts is a shell script framework for Docker." &&
-    echo "$helpmsg" | grep "apache2" &&
-    echo "$helpmsg" | grep "test2"
+    echo "$helpmsg" | grep "apache2"
 '
 
 test_expect_success 'ds -x help' '

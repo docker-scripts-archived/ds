@@ -46,6 +46,7 @@ test_expect_success 'ds @test2 apache2 [start|stop] (new command apache2)' '
 '
 
 test_expect_success 'ds @test1 test2 [start|stop] (new global command test2)' '
+    ds @test1 help | grep "test2" &&
     ds @test1 test2 start &&
     [[ $(ds @test2 exec ps ax | grep -v grep | grep apache2 -c) > 0 ]] &&
     ds @test1 test2 stop &&
