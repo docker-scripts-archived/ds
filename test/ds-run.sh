@@ -1,6 +1,7 @@
 #!/bin/bash -x
 ### Run tests inside a docker container.
 
+DSDIR=${DSDIR:-$HOME/.ds}
 source $DSDIR/config.sh
 
 ds pull ds
