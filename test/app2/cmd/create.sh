@@ -22,5 +22,6 @@ _create_new_global_cmd() {
     cp $APP_DIR/cmd/apache2.sh $cmdfile
     sed -i $cmdfile \
         -e "s/cmd_apache2/cmd_$container_dir/g" \
-        -e "s#ds exec#ds @$(pwd) exec#g"
+        -e "s#ds exec#ds @$(pwd) exec#g" \
+        -e "3 s/apache2/$container_dir/"
 }

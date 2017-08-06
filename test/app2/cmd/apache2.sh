@@ -1,6 +1,6 @@
 cmd_apache2_help() {
     cat <<_EOF
-    Usage: $COMMAND [start|stop|restart|reload]
+    apache2 [start|stop|restart|reload]
         Control apache2 inside the container.
 
 _EOF
