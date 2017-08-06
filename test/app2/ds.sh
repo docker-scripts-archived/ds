@@ -20,3 +20,9 @@ cmd_exec() {
     is_up || cmd_start
     docker exec -i $CONTAINER env TERM=xterm "$@"
 }
+
+rename_function cmd_remove orig_cmd_remove
+cmd_remove() {
+    rm -f $DSDIR/cmd/$CONTAINER.sh
+    orig_cmd_remove
+}
