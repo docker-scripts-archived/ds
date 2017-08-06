@@ -22,6 +22,11 @@ DockerScripts
 
    The option `-x` can be used for debugging.
 
+   For more details see the man page and the wiki pages:
+
+   - https://docker-scripts.github.io/ds/ds-1.0/man/
+   - https://github.com/docker-scripts/ds/wiki
+
 
 ## INSTALLATION
 
@@ -56,9 +61,9 @@ DockerScripts
     ds create
     ds config
 
-    ds @wsproxy domains-add moodle1-example-org moodle1.example.org
-    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org --test
-    ds @wsproxy get-ssl-cert user@example.org moodle1.example.org
+    ds wsproxy add
+    ds wsproxy ssl-cert -t
+    ds wsproxy ssl-cert
 
 
 ### Installing ShellInABox
@@ -72,10 +77,9 @@ DockerScripts
     ds create
     ds config
 
-    source ds cd @wsproxy
-    ds domains-add shell1-example-org shell1.example.org
-    ds get-ssl-cert user@example.org shell1.example.org --test
-    ds get-ssl-cert user@example.org shell1.example.org
+    ds @wsproxy domains-add shell1-example-org shell1.example.org
+    ds @wsproxy get-ssl-cert user@example.org shell1.example.org --test
+    ds @wsproxy get-ssl-cert user@example.org shell1.example.org
 
 
 ## COMMANDS

@@ -132,9 +132,17 @@
 <li><p><code>init &lt;app> [@&lt;container>]</code></p>
 
 <p>  Initialize a container directory by getting the file <code>settings.sh</code>
-  from the given app directory. If the second argument is missing,
-  the current directory will be used to initialize the container,
-  otherwise it will be done on <code>/var/ds/&lt;container></code>.</p></li>
+  from the given app directory.</p>
+
+<p>  The argument <var>app</var> can be a subdirectory of
+  <code>/opt/docker-scripts/</code>, or any other directory, absolute or
+  relative, that can be reached from the container's directory.</p>
+
+<p>  If the second argument is missing, the current directory will be
+  used for initializing the container. If <var>container</var> starts with
+  './' it will be relative to the current directory. If <var>container</var>
+  starts with '/', it will be an absolute path. Otherwise, it will
+  be done on <code>/var/ds/&lt;container></code>.</p></li>
 <li><p><code>info</code></p>
 
 <p>  Show some info about the container of the current directory.</p></li>
@@ -142,7 +150,7 @@
 
 <p>  Build the image, create the container, and configure the guest
   system inside the container.</p></li>
-<li><p><code>runcfg &lt;cfg></code></p>
+<li><p><code>runcfg [&lt;cfg>]</code></p>
 
 <p>  Run a configuration script inside the container.</p></li>
 <li><p><code>start</code>, <code>stop</code>, <code>restart</code></p>
@@ -226,6 +234,7 @@ container. The framework will look for a custom command named
 <ul>
 <li><code>$APPS/&lt;app>/cmd/command.sh</code>
  (by default <code>/opt/docker-scripts/&lt;app>/cmd/command.sh</code>)</li>
+<li><code>$DSDIR/cmd/command.sh</code> (by default <code>~/.ds/cmd/command.sh</code>)</li>
 <li><code>$CONTAINERS/&lt;container>/cmd/command.sh</code>
  (by default <code>/var/ds/&lt;container>/cmd/command.sh</code>)</li>
 </ul>
@@ -271,9 +280,9 @@ ds build
 ds create
 ds config
 
-ds @wsproxy domains-add moodle1-example-org moodle1.example.org
-ds @wsproxy get-ssl-cert user@example.org moodle1.example.org --test
-ds @wsproxy get-ssl-cert user@example.org moodle1.example.org
+ds wsproxy add
+ds wsproxy ssl-cert -t
+ds wsproxy ssl-cert
 </code></pre>
 
 <h3 id="Installing-ShellInABox">Installing ShellInABox</h3>
@@ -287,10 +296,9 @@ ds build
 ds create
 ds config
 
-source ds cd @wsproxy
-ds domains-add shell1-example-org shell1.example.org
-ds get-ssl-cert user@example.org shell1.example.org --test
-ds get-ssl-cert user@example.org shell1.example.org
+ds @wsproxy domains-add shell1-example-org shell1.example.org
+ds @wsproxy get-ssl-cert user@example.org shell1.example.org --test
+ds @wsproxy get-ssl-cert user@example.org shell1.example.org
 </code></pre>
 
 <h3 id="Installing-SchoolTool">Installing SchoolTool</h3>
@@ -333,7 +341,7 @@ ds get-ssl-cert user@example.org school1.example.org
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'>dashohoxha</li>
-    <li class='tc'>July 2017</li>
+    <li class='tc'>August 2017</li>
     <li class='tr'>ds(1)</li>
   </ol>
 
