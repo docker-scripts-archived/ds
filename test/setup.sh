@@ -1,8 +1,5 @@
 # This file should be sourced by all test-scripts
 
-ulimit=$(ulimit -n)
-ulimit -n 9000
-
 cd "$(dirname "$0")"
 source ./sharness.sh
 
@@ -20,5 +17,3 @@ _EOF
 GITHUB="https://github.com/docker-scripts"
 APPS="$TEMP_DIR/docker-scripts"
 CONTAINERS="$TEMP_DIR/containers"
-
-ulimit -n $ulimit
