@@ -45,6 +45,14 @@ test_expect_success 'ds @test2 apache2 [start|stop] (new command apache2)' '
     [[ $(ds @test2 exec ps ax | grep -v grep | grep apache2 -c) > 0 ]]
 '
 
+test_expect_success 'ds @test1 create' '
+    ds pull ds &&
+    rm -rf $CONTAINERS/test1 &&
+    ds init ds/test/app1 @test1
+    ds @test1 build &&
+    ds @test1 create
+'
+
 test_expect_success 'ds @test1 test2 [start|stop] (new global command test2)' '
     ds @test1 help | grep "test2" &&
     ds @test1 test2 start &&
