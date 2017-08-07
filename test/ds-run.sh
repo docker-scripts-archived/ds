@@ -1,9 +1,6 @@
 #!/bin/bash -x
 ### Run tests inside a docker container.
 
-ulimit=$(ulimit -n)
-ulimit -n 9000
-
 DSDIR=${DSDIR:-$HOME/.ds}
 source $DSDIR/config.sh
 
@@ -18,5 +15,3 @@ ds config
 
 ds runcfg make $APPS
 ds exec $APPS/ds/test/run.sh "$@"
-
-ulimit -n $ulimit

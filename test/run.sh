@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-ulimit=$(ulimit -n)
-ulimit -n 9000
-
 opts=''
 if [[ $1 == '-d' || $1 == '--debug' ]]; then
     opts='--verbose'
@@ -27,5 +24,3 @@ done
 #     tests/run.sh t09-sign.t t10-verify.t
 #     tests/run.sh t2*
 #     tests/run.sh *-key-*
-
-ulimit -n $ulimit
