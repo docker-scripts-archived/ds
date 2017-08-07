@@ -133,7 +133,7 @@ load_container_settings() {
         || fail "No CONTAINER defined on ./settings.sh"
 }
 
-ds() {
+main() {
     set -o pipefail
     VERSION="1.0"
     LIBDIR="$(dirname "$0")"
@@ -192,4 +192,4 @@ ds() {
     esac
 }
 
-ds "$@"
+main "$@"
