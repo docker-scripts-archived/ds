@@ -61,6 +61,16 @@ The commands are listed below:
     remove
         Remove the container and the image.
 
+    runtest [-d|--debug] [<test-script.t.sh>...]
+        Run the given test scripts. If no test-script is given
+        all the test scripts in the working directory will be run.
+        Test scripts have the extension '.t.sh'
+
+    test [-d|--debug] [<test-script.t.sh>...]
+        Run the given test scripts inside the ds-test container.
+        It actually call the command 'runtest' inside the container
+        with the same options and arguments.
+
     help
         Display a help message.
 

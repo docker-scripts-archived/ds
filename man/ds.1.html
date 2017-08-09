@@ -168,6 +168,16 @@
 <li><p><code>remove</code></p>
 
 <p>  Remove the container and the image.</p></li>
+<li><p><code>runtest [-d|--debug] [&lt;test-script.t.sh&gt;...]</code></p>
+
+<p>  Run the given test scripts. If no test-script is given all the
+  test scripts in the working directory will be run.  Test scripts
+  have the extension <code>.t.sh</code></p></li>
+<li><p><code>test [-d|--debug] [&lt;test-script.t.sh&gt;...]</code></p>
+
+<p>  Run the given test scripts inside the ds-test container.  It
+  actually call the command <code>runtest</code> inside the container with the
+  same options and arguments.</p></li>
 <li><p><code>help</code></p>
 
 <p>  Display a help message.</p></li>
