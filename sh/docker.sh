@@ -160,8 +160,10 @@ main() {
         '')            ds_info ;              return ;;
         -v|--version)  cmd_version "$@" ;     return ;;
         -h|--help)     call cmd_help "$@" ;   return ;;
-        pull|init)     call cmd_$arg1 "$@" ;  return ;;
-
+        pull|init|runtest|test)
+            call cmd_$arg1 "$@"
+            return
+            ;;
         -x) exec bash -x ds "$@"
             ;;
         @*) cd_to_container_dir $arg1

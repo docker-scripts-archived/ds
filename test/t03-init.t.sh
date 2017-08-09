@@ -1,9 +1,6 @@
-#!/usr/bin/env bash
+description 'Test ds init'
 
-test_description='Test: ds init'
-source "$(dirname "$0")"/setup.sh
-
-test_expect_success 'ds init ds/test/app1 @test1' '
+test_case 'ds init ds/test/app1 @test1' '
     rm -rf $CONTAINERS/test1 &&
     ds pull ds &&
     ds init ds/test/app1 @test1 &&
@@ -11,7 +8,7 @@ test_expect_success 'ds init ds/test/app1 @test1' '
     [[ -f $CONTAINERS/test1/settings.sh ]]
 '
 
-test_expect_success 'ds init ds/test/app1' '
+test_case 'ds init ds/test/app1' '
     rm -rf $CONTAINERS/test1 &&
     mkdir -p  $CONTAINERS/test1 &&
     cd $CONTAINERS/test1 &&
@@ -19,14 +16,14 @@ test_expect_success 'ds init ds/test/app1' '
     [[ -f $CONTAINERS/test1/settings.sh ]]
 '
 
-test_expect_success 'ds init (already exists)' '
+test_case 'ds init (already exists)' '
     [[ -f $CONTAINERS/test1/settings.sh ]] &&
     cd $CONTAINERS/test1 &&
     ds init ds/test/app1 2>&1 | grep "already exists" &&
     ds init ds/test/app1 @test1 2>&1 | grep "already exists"
 '
 
-test_expect_success 'ds init (wrong params)' '
+test_case 'ds init (wrong params)' '
     rm -rf $CONTAINERS/test1 &&
     mkdir -p $APPS/test1 &&
     ds init 2>&1 | grep "Usage:" &&
@@ -34,5 +31,3 @@ test_expect_success 'ds init (wrong params)' '
     ds init ds/test/app1 test11 2>&1 | grep "Usage:" &&
     ds init ds/test @test1 2>&1 | grep "There is no file"
 '
-
-test_done

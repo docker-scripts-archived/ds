@@ -1,20 +1,16 @@
-#!/usr/bin/env bash
+description 'Basic checks'
 
-test_description='Basic checks'
-source "$(dirname "$0")"/setup.sh
-
-test_expect_success 'ds' '
+test_case 'ds' '
     [[ "$(ds | grep APPS)" == "APPS=$APPS" ]]
 '
 
-test_expect_success 'ds -v ; ds --version' '
+test_case 'ds -v ; ds --version' '
     ds -v | grep DockerScript &&
     ds --version | grep DockerScript
 '
 
-test_expect_success 'ds -h ; ds --help' '
+test_case 'ds -h ; ds --help' '
     ds -h | grep "The commands are listed below" &&
     ds --help | grep "The commands are listed below"
 '
 
-test_done
