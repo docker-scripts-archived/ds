@@ -17,17 +17,16 @@ cmd_restart() {
 }
 
 cmd_shell() {
-    is_up || cmd_start
     cmd_exec bash
 }
 
 cmd_exec() {
-    is_up || cmd_start
+    is_up || cmd_start && sleep 2
     docker exec -it $CONTAINER env TERM=xterm "$@"
 }
 
 cmd_remove() {
-    is_up && cmd_stop
+    is_up && cmd_stop && sleep 2
     docker rm $CONTAINER 2>/dev/null
     docker rmi $IMAGE 2>/dev/null
 }
@@ -185,6 +184,11 @@ main() {
     case $command in
         start|stop|restart|shell|exec|remove)
             cmd_$command "$@"
+            ;;
+        config)
+            is_up || cmd_start && sleep 2
+            call cmd_$command "$@"
+            cmd_restart && sleep 2
             ;;
         *)
             call cmd_$command "$@"

@@ -7,10 +7,6 @@ _EOF
 }
 
 cmd_config() {
-    is_up || cmd_start && sleep 3
-
     ds runcfg set_prompt
     ds runcfg apache2
-
-    cmd_restart
 }

@@ -7,10 +7,5 @@ _EOF
 }
 
 cmd_config() {
-    cmd_start
-    sleep 3
-
     ds runcfg set_prompt
-
-    cmd_restart
 }
