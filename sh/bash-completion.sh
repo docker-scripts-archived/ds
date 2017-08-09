@@ -27,16 +27,27 @@ _ds()
                 *)  _ds_commands $cur ;;
             esac
             ;;
-        @)       _ds_containers "@$cur" ;;
-        init)    _ds_cmd_init $cur ;;
-        runcfg)  _ds_cmd_runcfg $cur ;;
-        *)       _ds_custom_completion "$prev" "$cur" ;;
+        @)
+            _ds_containers "@$cur"
+            ;;
+        init)
+            _ds_cmd_init $cur
+            ;;
+        runcfg)
+            _ds_cmd_runcfg $cur
+            ;;
+        runtest|test)
+            COMPREPLY=( $(compgen -f -X '!*.t.sh' -- $cur) )
+            ;;
+        *)
+            _ds_custom_completion "$prev" "$cur"
+            ;;
     esac
 }
 
 _ds_commands() {
     local commands="version start stop restart shell exec remove"
-    commands+=" build config create help info init runcfg snapshot"
+    commands+=" build config create help info init runcfg snapshot runtest test"
 
     local cmdlist=""
     local dir=${DSDIR:-$HOME/.ds}
