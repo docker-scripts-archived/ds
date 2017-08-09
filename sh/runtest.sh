@@ -5,6 +5,8 @@ workdir=$(pwd)
 
 test_description="$test_script"
 source $(dirname $0)/sharness.sh
+this_test=${test_script##*/}
+this_test=${this_test%.t.sh}
 
 export HOME="$workdir/ds-test"
 export DSDIR="$HOME/.ds"
