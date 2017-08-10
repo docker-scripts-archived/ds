@@ -17,6 +17,13 @@ APPS=$HOME/docker-scripts
 CONTAINERS=$HOME/containers
 _EOF
 source $DSDIR/config.sh
+cat <<'_EOF' > $DSDIR/ds.sh
+# no option -t to docker exec
+cmd_exec() {
+    is_up || cmd_start && sleep 2
+    docker exec -i $CONTAINER env TERM=xterm "$@"
+}
+_EOF
 
 description() {
     local str=$1
