@@ -11,6 +11,6 @@ cmd_build() {
     local nohup_out=logs/nohup-$CONTAINER-$datestamp.out
     rm -f $nohup_out
     mkdir -p logs/
-    nohup docker build "$@" --tag=$IMAGE --file=$APP_DIR/Dockerfile $APP_DIR/ 2>&1 | tee $nohup_out &
+    nohup docker build "$@" --tag=$IMAGE $APP_DIR/ 2>&1 | tee $nohup_out &
     wait $!
 }
