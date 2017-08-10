@@ -31,6 +31,12 @@ cmd_remove() {
     docker rmi $IMAGE 2>/dev/null
 }
 
+cmd_make() {
+    ds build
+    ds create
+    ds config
+}
+
 # When the command is 'cd', go to the directory of the given container.
 # It must be called by sourcing, like this: `. ds cd @container`
 cmd_cd() {
@@ -184,7 +190,7 @@ main() {
     # run the given command
     local command=$arg1
     case $command in
-        start|stop|restart|shell|exec|remove)
+        make|start|stop|restart|shell|exec|remove)
             cmd_$command "$@"
             ;;
         config)

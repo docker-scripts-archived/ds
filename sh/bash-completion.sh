@@ -47,7 +47,7 @@ _ds()
 
 _ds_commands() {
     local commands="version start stop restart shell exec remove"
-    commands+=" build config create help info init runcfg snapshot runtest test"
+    commands+=" make build config create help info init runcfg snapshot runtest test"
 
     local cmdlist=""
     local dir=${DSDIR:-$HOME/.ds}
