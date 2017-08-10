@@ -1,6 +1,6 @@
 cmd_runcfg_help() {
     cat <<_EOF
-    $COMMAND [<cfg>]
+    runcfg [<cfg>]
         Run a configuration script inside the container.
 
 _EOF
@@ -16,9 +16,9 @@ cmd_runcfg() {
 
     # get the path of the configuration script
     local cfgscript
-    [[ -x $LIBDIR/config/$cfg.sh ]] && cfgscript=$LIBDIR/config/$cfg.sh
-    [[ -x $APP_DIR/config/$cfg.sh ]] && cfgscript=$APP_DIR/config/$cfg.sh
-    [[ -x ./config/$cfg.sh ]] && cfgscript=./config/$cfg.sh
+    [[ -x $LIBDIR/cfg/$cfg.sh ]] && cfgscript=$LIBDIR/cfg/$cfg.sh
+    [[ -x $APP_DIR/cfg/$cfg.sh ]] && cfgscript=$APP_DIR/cfg/$cfg.sh
+    [[ -x ./cfg/$cfg.sh ]] && cfgscript=./cfg/$cfg.sh
     [[ -x $cfgscript ]] || fail "\n--> Configuration script '$cfg' not found.\n"
 
     # copy to a tmp dir and run from inside the container
@@ -33,7 +33,7 @@ cmd_runcfg() {
 _cmd_runcfg_list() {
     # predefined cfg scripts
     local cfgscripts=""
-    [[ -d $LIBDIR/config/ ]] && cfgscripts=$(ls $LIBDIR/config/)
+    [[ -d $LIBDIR/cfg/ ]] && cfgscripts=$(ls $LIBDIR/cfg/)
     cfgscripts="${cfgscripts//.sh/}"
     cfgscripts="$(echo $cfgscripts | sed -e 's/ / ; /g')"
     [[ -n $cfgscripts ]] &&
@@ -41,7 +41,7 @@ _cmd_runcfg_list() {
 
     # application cfg scripts
     cfgscripts=""
-    [[ -d $APP_DIR/config/ ]] && cfgscripts=$(ls $APP_DIR/config/)
+    [[ -d $APP_DIR/cfg/ ]] && cfgscripts=$(ls $APP_DIR/cfg/)
     cfgscripts="${cfgscripts//.sh/}"
     cfgscripts="$(echo $cfgscripts | sed -e 's/ / ; /g')"
     [[ -n $cfgscripts ]] &&
@@ -49,7 +49,7 @@ _cmd_runcfg_list() {
 
     # container cfg scripts
     cfgscripts=""
-    [[ -d ./config/ ]] && cfgscripts=$(ls ./config/)
+    [[ -d ./cfg/ ]] && cfgscripts=$(ls ./cfg/)
     cfgscripts="${cfgscripts//.sh/}"
     cfgscripts="$(echo $cfgscripts | sed -e 's/ / ; /g')"
     [[ -n $cfgscripts ]] &&

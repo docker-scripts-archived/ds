@@ -9,6 +9,6 @@ _EOF
 cmd_config() {
     # Run configuration scripts with: # ds runcfg $cfg
     # Configuration scripts are located either at
-    # $LIBDIR/config/ or at $APP_DIR/config/
+    # $LIBDIR/cfg/ or at $APP_DIR/cfg/
     :
 }

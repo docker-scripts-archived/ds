@@ -89,7 +89,7 @@ _ds_cmd_runcfg() {
     local cfgscripts="apache2 get-ssl-cert mount_tmp_on_ram mysql phpmyadmin set_prompt ssmtp"
 
     local cfglist=""
-    local dir=$(_ds_app_dir)/config/
+    local dir=$(_ds_app_dir)/cfg/
     [[ -d $dir ]] && cfglist=$(ls $dir)
     cfgscripts+=" ${cfglist//.sh/}"
 
