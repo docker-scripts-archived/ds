@@ -11,7 +11,7 @@ EOF
 
 ### create a configuration file
 mkdir -p /var/www/$IMAGE
-cat <<EOF > /etc/apache2/sites-available/$IMAGE.conf
+cat <<EOF > /etc/apache2/sites-available/default.conf
 <VirtualHost *:80>
         ServerName $DOMAIN
         RedirectPermanent / https://$DOMAIN/
@@ -20,8 +20,8 @@ cat <<EOF > /etc/apache2/sites-available/$IMAGE.conf
 <VirtualHost _default_:443>
         ServerName $DOMAIN
 
-        DocumentRoot /var/www/$IMAGE
-        <Directory /var/www/$IMAGE/>
+        DocumentRoot /var/www/default
+        <Directory /var/www/default/>
             AllowOverride All
         </Directory>
 
@@ -37,7 +37,7 @@ EOF
 
 ### enable ssl etc.
 a2enmod ssl
-a2ensite $IMAGE
+a2ensite default
 a2dissite 000-default
 service apache2 restart
 
