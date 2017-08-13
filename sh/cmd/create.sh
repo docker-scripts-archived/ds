@@ -34,6 +34,8 @@ cmd_create() {
 # See: https://github.com/solita/docker-systemd/blob/master/setup
 _systemd_config() {
     if nsenter --mount=/proc/1/ns/mnt -- mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
+        : # do nothing
+    else
         [[ ! -d /sys/fs/cgroup/systemd ]] && mkdir -p /sys/fs/cgroup/systemd
         nsenter --mount=/proc/1/ns/mnt -- mount -t cgroup cgroup -o none,name=systemd /sys/fs/cgroup/systemd
     fi
