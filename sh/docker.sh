@@ -195,7 +195,7 @@ main() {
             ;;
         config)
             is_up || cmd_start && sleep 2
-            call cmd_$command "$@"
+            log call cmd_$command "$@"
             cmd_restart && sleep 2
             ;;
         *)

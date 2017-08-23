@@ -25,3 +25,19 @@ is_up() {
     docker ps | grep $container >/dev/null
     return $?
 }
+
+# run the given command and log its output
+log() {
+    local datestamp=$(date +%F | tr -d -)
+    local logfile=logs/$CONTAINER-$datestamp.out
+    mkdir -p logs/
+    cat << _EOF >> $logfile
+
+################################################################################
+###    Time: $(date)
+### Command: $*
+################################################################################
+
+_EOF
+    $* 2>&1 | tee -a $logfile
+}
