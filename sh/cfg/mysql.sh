@@ -7,7 +7,7 @@ mysql --defaults-file=/etc/mysql/debian.cnf -B \
 sed -i /etc/mysql/debian.cnf \
     -e "/^password/c password = $passwd"
 
-#### set the password for the root user of mysql
+### set the password for the root user of mysql
 passwd=$(mcookie | head -c 16)
 query="update mysql.user set authentication_string=PASSWORD(\"$passwd\") where User=\"root\"; flush privileges;"
 debian_cnf=/etc/mysql/debian.cnf
