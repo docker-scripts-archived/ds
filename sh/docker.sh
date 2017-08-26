@@ -27,6 +27,7 @@ cmd_exec() {
 
 cmd_remove() {
     is_up && cmd_stop && sleep 2
+    docker network disconnect ds-net $CONTAINER 2>/dev/null
     docker rm $CONTAINER 2>/dev/null
     docker rmi $IMAGE 2>/dev/null
 }
@@ -79,6 +80,7 @@ load_ds_config() {
 GITHUB='https://github.com/docker-scripts'
 APPS='/opt/docker-scripts'
 CONTAINERS='/var/ds'
+#NETWORK='172.27.0.0/16'
 _EOF
     fi
     source "$config_file"

@@ -10,7 +10,14 @@ cmd_create() {
     # configure the host for running systemd containers
     _systemd_config
 
+    # create a ds network if it does not yet exist
+    local subnet=''
+    [[ -n $NETWORK ]] && subnet="--subnet $NETWORK"
+    docker network create $subnet ds-net 2>/dev/null
+
+    # remove the container if it exists
     cmd_stop
+    docker network disconnect ds-net $CONTAINER 2>/dev/null
     docker rm $CONTAINER 2>/dev/null
 
     # forwarded ports
@@ -19,14 +26,24 @@ cmd_create() {
         ports+=" -p $port"
     done
 
+    # network aliases
+    local network_aliases="--network-alias $CONTAINER"
+    [[ -n $DOMAIN ]] && network_aliases+=" --network-alias $DOMAIN"
+    if [[ -n $DOMAINS ]]; then
+        for domain in $DOMAINS; do
+            network_aliases+=" --network-alias $domain"
+        done
+    fi
+
     # create a new container
     docker create --name=$CONTAINER --hostname=$CONTAINER \
         --restart=unless-stopped \
         --cap-add SYS_ADMIN \
         --security-opt apparmor:unconfined \
         --tmpfs /run --tmpfs /run/lock \
-        -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-        -v $(pwd):/host \
+        --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
+        --volume $(pwd):/host \
+        --network ds-net $network_aliases \
         $ports "$@" $IMAGE
 }
 
