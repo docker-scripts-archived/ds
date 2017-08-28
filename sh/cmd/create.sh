@@ -40,9 +40,10 @@ cmd_create() {
         --restart=unless-stopped \
         --cap-add SYS_ADMIN \
         --security-opt apparmor:unconfined \
-        --tmpfs /run --tmpfs /run/lock \
-        --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
-        --volume $(pwd):/host \
+        --mount type=tmpfs,destination=/run \
+        --mount type=tmpfs,destination=/run/lock \
+        --mount type=bind,src=/sys/fs/cgroup,dst=/sys/fs/cgroup,readonly \
+        --mount type=bind,source=$(pwd),destination=/host \
         --network ds-net $network_aliases \
         $ports "$@" $IMAGE
 }
