@@ -8,8 +8,9 @@ _EOF
 
 rename_function cmd_create orig_cmd_create
 cmd_create() {
+    mkdir -p www
     orig_cmd_create \
-        -v $(pwd)/www:/var/www/$IMAGE
+        --mount type=bind,src=$(pwd)/www,dst=/var/www/$IMAGE
 
     _create_new_global_cmd
 }

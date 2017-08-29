@@ -11,9 +11,10 @@ cmd_create() {
     # See: https://www.develves.net/blogs/asd/2016-05-27-alternative-to-docker-in-docker/
 
     local workdir=${1:-$(pwd)}
+    mkdir -p $workdir
     orig_cmd_create \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -v $APPS/ds:$APPS/ds \
-        -v $workdir:$workdir \
+        --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+        --mount type=bind,src=$APPS/ds,dst=$APPS/ds \
+        --mount type=bind,src=$workdir,dst=$workdir \
         --workdir $workdir
 }
