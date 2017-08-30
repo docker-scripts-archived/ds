@@ -1,7 +1,7 @@
 #!/bin/bash -x
 ### install phpmyadmin
 
-apt-get install phpmyadmin
+apt-get -y install phpmyadmin
 
 if [[ -n $DEV ]]; then
     ### make login expiration time longer
