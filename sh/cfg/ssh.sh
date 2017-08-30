@@ -1,7 +1,8 @@
 #!/bin/bash -x
 ### install openssh
 
-apt-get -y install openssh-server openssh-client
+DEBIAN_FRONTEND=noninteractive \
+    apt-get -y install openssh-server openssh-client
 
 sshd_port=${$1:-22}
 
