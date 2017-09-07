@@ -20,21 +20,6 @@ cmd_create() {
     docker network disconnect ds-net $CONTAINER 2>/dev/null
     docker rm $CONTAINER 2>/dev/null
 
-    # forwarded ports
-    local ports=''
-    for port in $PORTS; do
-        ports+=" -p $port"
-    done
-
-    # network aliases
-    local network_aliases="--network-alias $CONTAINER"
-    [[ -n $DOMAIN ]] && network_aliases+=" --network-alias $DOMAIN"
-    if [[ -n $DOMAINS ]]; then
-        for domain in $DOMAINS; do
-            network_aliases+=" --network-alias $domain"
-        done
-    fi
-
     # create a new container
     docker create --name=$CONTAINER --hostname=$CONTAINER \
         --restart=unless-stopped \
@@ -44,12 +29,20 @@ cmd_create() {
         --mount type=tmpfs,destination=/run/lock \
         --mount type=bind,src=/sys/fs/cgroup,dst=/sys/fs/cgroup,readonly \
         --mount type=bind,source=$(pwd),destination=/host \
-        --network ds-net $network_aliases \
-        $ports "$@" $IMAGE
+        --network ds-net $(_network_aliases) \
+        $(_mount_letsencrypt_dirs) \
+        $(_forwarded_ports) \
+        "$@" $IMAGE
+
+    # register domains to wsproxy
+    if [[ -n $DOMAIN ]]; then
+        local wsproxy=${WSPROXY:-wsproxy}
+        ds @$wsproxy domains-add $CONTAINER $DOMAIN $DOMAINS
+    fi
 }
 
-# Configure the host for running systemd containers.
-# See: https://github.com/solita/docker-systemd/blob/master/setup
+### Configure the host for running systemd containers.
+### See: https://github.com/solita/docker-systemd/blob/master/setup
 _systemd_config() {
     if nsenter --mount=/proc/1/ns/mnt -- mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
         : # do nothing
@@ -57,4 +50,47 @@ _systemd_config() {
         [[ ! -d /sys/fs/cgroup/systemd ]] && mkdir -p /sys/fs/cgroup/systemd
         nsenter --mount=/proc/1/ns/mnt -- mount -t cgroup cgroup -o none,name=systemd /sys/fs/cgroup/systemd
     fi
+}
+
+### forwarded ports
+_forwarded_ports() {
+    [[ -n $PORTS ]] || return
+
+    local ports=''
+    for port in $PORTS; do
+        ports+=" -p $port"
+    done
+
+    echo "$ports"
+}
+
+### create network aliases
+_network_aliases() {
+    local network_aliases="--network-alias $CONTAINER"
+
+    if [[ -n $DOMAIN ]]; then
+        for domain in $DOMAIN $DOMAINS; do
+            network_aliases+=" --network-alias $domain"
+        done
+    fi
+
+    echo "$network_aliases"
+}
+
+### mount letsencrypt config dirs
+_mount_letsencrypt_dirs() {
+    [[ -n $DOMAIN ]] || return
+
+    local wsproxy=${WSPROXY:-wsproxy}
+    local certdir="$CONTAINERS/$wsproxy/letsencrypt"
+    [[ ${wsproxy:0:1} == '/' ]] && certdir="$wsproxy/letsencrypt"
+
+    local mount_dirs=''
+    for domain in $DOMAIN $DOMAINS; do
+        mkdir -p $certdir/{archive,live}/$domain
+        mount_dirs+=" --mount type=bind,src=$certdir/archive/$domain,dst=/etc/letsencrypt/archive/$domain"
+        mount_dirs+=" --mount type=bind,src=$certdir/live/$domain,dst=/etc/letsencrypt/live/$domain"
+    done
+
+    echo "$mount_dirs"
 }
