@@ -10,7 +10,7 @@ tmpfs /var/log/apache2 tmpfs defaults,noatime 0 0
 EOF
 
 ### create a configuration file
-mkdir -p /var/www/$IMAGE
+mkdir -p /var/www/default
 cat <<EOF > /etc/apache2/sites-available/default.conf
 <VirtualHost *:80>
         ServerName $DOMAIN
@@ -34,6 +34,9 @@ cat <<EOF > /etc/apache2/sites-available/default.conf
         </FilesMatch>
 </VirtualHost>
 EOF
+
+### we need to refer to the apache2 config by the name "$DOMAIN.conf" as well
+ln /etc/apache2/sites-available/{default,$DOMAIN}.conf
 
 ### enable ssl etc.
 a2enmod ssl

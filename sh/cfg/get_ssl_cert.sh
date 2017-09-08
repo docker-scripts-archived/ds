@@ -29,7 +29,7 @@ certbot certonly --webroot -m $GMAIL_ADDRESS --agree-tos -w /var/www -d $DOMAIN 
 
 # fix the apache configuration to use the new ssl cert
 certdir=/etc/letsencrypt/live/$DOMAIN
-sed -i /etc/apache2/sites-available/$IMAGE.conf -r \
+sed -i /etc/apache2/sites-available/default.conf -r \
     -e "s|#?SSLCertificateFile .*|SSLCertificateFile      $certdir/cert.pem|" \
     -e "s|#?SSLCertificateKeyFile .*|SSLCertificateKeyFile   $certdir/privkey.pem|" \
     -e "s|#?SSLCertificateChainFile .*|SSLCertificateChainFile $certdir/chain.pem|"
