@@ -86,11 +86,8 @@ _mount_letsencrypt_dirs() {
     [[ ${wsproxy:0:1} == '/' ]] && certdir="$wsproxy/letsencrypt"
 
     local mount_dirs=''
-    for domain in $DOMAIN $DOMAINS; do
-        mkdir -p $certdir/{archive,live}/$domain
-        mount_dirs+=" --mount type=bind,src=$certdir/archive/$domain,dst=/etc/letsencrypt/archive/$domain"
-        mount_dirs+=" --mount type=bind,src=$certdir/live/$domain,dst=/etc/letsencrypt/live/$domain"
-    done
+    mount_dirs+=" --mount type=bind,src=$certdir/archive,dst=/etc/letsencrypt/archive,readonly"
+    mount_dirs+=" --mount type=bind,src=$certdir/live,dst=/etc/letsencrypt/live,readonly"
 
     echo "$mount_dirs"
 }
