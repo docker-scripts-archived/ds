@@ -12,12 +12,12 @@ cmd_create() {
 
     # create a ds network if it does not yet exist
     local subnet=''
-    [[ -n $NETWORK ]] && subnet="--subnet $NETWORK"
-    docker network create $subnet ds-net 2>/dev/null
+    [[ -n $SUBNET ]] && subnet="--subnet $SUBNET"
+    docker network create $subnet $NETWORK 2>/dev/null
 
     # remove the container if it exists
     cmd_stop
-    docker network disconnect ds-net $CONTAINER 2>/dev/null
+    docker network disconnect $NETWORK $CONTAINER 2>/dev/null
     docker rm $CONTAINER 2>/dev/null
 
     # create a new container
@@ -29,9 +29,9 @@ cmd_create() {
         --mount type=tmpfs,destination=/run/lock \
         --mount type=bind,src=/sys/fs/cgroup,dst=/sys/fs/cgroup,readonly \
         --mount type=bind,source=$(pwd),destination=/host \
-        --network ds-net $(_network_aliases) \
         $(_mount_letsencrypt_dirs) \
-        $(_forwarded_ports) \
+        $(_published_ports) \
+        $(_network_and_aliases) \
         "$@" $IMAGE
 
     # register domains to wsproxy
@@ -52,31 +52,6 @@ _systemd_config() {
     fi
 }
 
-### forwarded ports
-_forwarded_ports() {
-    [[ -n $PORTS ]] || return
-
-    local ports=''
-    for port in $PORTS; do
-        ports+=" -p $port"
-    done
-
-    echo "$ports"
-}
-
-### create network aliases
-_network_aliases() {
-    local network_aliases="--network-alias $CONTAINER"
-
-    if [[ -n $DOMAIN ]]; then
-        for domain in $DOMAIN $DOMAINS; do
-            network_aliases+=" --network-alias $domain"
-        done
-    fi
-
-    echo "$network_aliases"
-}
-
 ### mount letsencrypt config dirs
 _mount_letsencrypt_dirs() {
     [[ -n $DOMAIN ]] || return
@@ -90,4 +65,31 @@ _mount_letsencrypt_dirs() {
     mount_dirs+=" --mount type=bind,src=$certdir/live,dst=/etc/letsencrypt/live,readonly"
 
     echo "$mount_dirs"
+}
+
+### published ports
+_published_ports() {
+    [[ -n $PORTS ]] || return
+
+    local ports=''
+    for port in $PORTS; do
+        ports+=" --publish $port"
+    done
+
+    echo "$ports"
+}
+
+### network and aliases
+_network_and_aliases() {
+    [[ -n $NETWORK ]] || return
+
+    local network=" --network $NETWORK"
+    network+="--network-alias $CONTAINER"
+    if [[ -n $DOMAIN ]]; then
+        for domain in $DOMAIN $DOMAINS; do
+            network+=" --network-alias $domain"
+        done
+    fi
+
+    echo "$network"
 }

@@ -15,6 +15,7 @@ cat <<_EOF > $DSDIR/config.sh
 GITHUB=https://github.com/docker-scripts
 APPS=$HOME/docker-scripts
 CONTAINERS=$HOME/containers
+NETWORK='dsnet-test'
 _EOF
 source $DSDIR/config.sh
 cat <<'_EOF' > $DSDIR/ds.sh
