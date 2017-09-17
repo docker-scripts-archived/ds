@@ -84,7 +84,7 @@ _network_and_aliases() {
     [[ -n $NETWORK ]] || return
 
     local network=" --network $NETWORK"
-    network+="--network-alias $CONTAINER"
+    network+=" --network-alias $CONTAINER"
     if [[ -n $DOMAIN ]]; then
         for domain in $DOMAIN $DOMAINS; do
             network+=" --network-alias $domain"
