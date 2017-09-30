@@ -7,6 +7,6 @@ _EOF
 }
 
 cmd_config() {
-    ds runcfg set_prompt
-    ds runcfg apache2
+    ds inject set_prompt.sh
+    ds inject apache2.sh
 }

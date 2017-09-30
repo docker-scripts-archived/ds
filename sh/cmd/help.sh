@@ -46,8 +46,8 @@ The commands are listed below:
         Build the image, create the container, and configure
         the guest system inside the container.
 
-    runcfg [<cfg>]
-        Run a configuration script inside the container.
+    inject [<script>]
+        Inject and run a script inside the container.
 
     start, stop, restart
         Start, stop and restart the container.

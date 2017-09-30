@@ -16,7 +16,7 @@ cmd_test() {
     ds @ds-test create $(pwd)
     ds @ds-test config
 
-    ds @ds-test runcfg install-ds $APPS/ds
+    ds @ds-test inject install-ds.sh $APPS/ds
     ds @ds-test exec ds runtest "$@"
     ds @ds-test stop
 }

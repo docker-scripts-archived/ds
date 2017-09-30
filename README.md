@@ -107,9 +107,9 @@ DockerScripts
     Build the image, create the container, and configure the guest
     system inside the container.
 
-* `runcfg <cfg>`
+* `inject <script>`
 
-    Run a configuration script inside the container.
+    Inject and run a script inside the container.
 
 * `start`, `stop`, `restart`
 

@@ -33,8 +33,8 @@ _ds()
         init)
             _ds_cmd_init $cur
             ;;
-        runcfg)
-            _ds_cmd_runcfg $cur
+        inject)
+            _ds_cmd_inject $cur
             ;;
         runtest|test)
             COMPREPLY=( $(compgen -f -X '!*.t.sh' -- $cur) )
@@ -47,7 +47,7 @@ _ds()
 
 _ds_commands() {
     local commands="version start stop restart shell exec remove"
-    commands+=" make build config create help info init runcfg snapshot runtest test"
+    commands+=" make build config create help info init inject snapshot runtest test"
 
     local cmdlist=""
     local dir=${DSDIR:-$HOME/.ds}
@@ -85,15 +85,15 @@ _ds_cmd_init() {
     COMPREPLY=( $(compgen -W "$(ls $APPS)" -- $1) )
 }
 
-_ds_cmd_runcfg() {
-    local cfgscripts="apache2 get-ssl-cert mysql phpmyadmin set_prompt ssmtp"
+_ds_cmd_inject() {
+    local scripts="apache2 get-ssl-cert mysql phpmyadmin set_prompt ssmtp"
 
-    local cfglist=""
-    local dir=$(_ds_app_dir)/cfg/
-    [[ -d $dir ]] && cfglist=$(ls $dir)
-    cfgscripts+=" ${cfglist//.sh/}"
+    local list=""
+    local dir=$(_ds_app_dir)/scripts/
+    [[ -d $dir ]] && list=$(ls $dir)
+    scripts+=" ${list//.sh/}"
 
-    COMPREPLY=( $(compgen -W "$cfgscripts" -- $1) )
+    COMPREPLY=( $(compgen -W "$cripts" -- $1) )
 }
 
 _ds_custom_completion() {

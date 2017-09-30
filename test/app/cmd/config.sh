@@ -7,5 +7,5 @@ _EOF
 }
 
 cmd_config() {
-    ds runcfg set_prompt
+    ds inject set_prompt.sh
 }

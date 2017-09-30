@@ -7,8 +7,8 @@ _EOF
 }
 
 cmd_config() {
-    # Run configuration scripts with: # ds runcfg $cfg
-    # Configuration scripts are located either at
-    # $LIBDIR/cfg/ or at $APP_DIR/cfg/
+    # Run configuration scripts with: # ds inject script.sh
+    # Configuration scripts are located at $LIBDIR/scripts/
+    # or at $APP_DIR/scripts/ or at $CONTAINER_DIR/scripts/
     :
 }
