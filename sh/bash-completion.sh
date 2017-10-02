@@ -47,18 +47,18 @@ _ds()
 
 _ds_commands() {
     local commands="version start stop restart shell exec remove"
-    commands+=" make build config create help info init inject snapshot runtest test"
 
-    local cmdlist=""
-    local dir=${DSDIR:-$HOME/.ds}
-    [[ -d $dir/cmd/ ]] && cmdlist=$(ls $dir/cmd/)
+    local cmdlist=''
+    for dir in \
+        /usr/lib/ds \
+        $(_ds_app_dir) \
+        ${DSDIR:-$HOME/.ds} \
+        $(_ds_container_dir)
+    do
+        [[ -d $dir/cmd/ ]] && cmdlist+=" $(ls $dir/cmd/)"
+    done
+
     commands+=" ${cmdlist//.sh/}"
-
-    cmdlist=""
-    dir=$(_ds_app_dir)
-    [[ -d $dir/cmd/ ]] && cmdlist=$(ls $dir/cmd/)
-    commands+=" ${cmdlist//.sh/}"
-
     COMPREPLY=( $(compgen -W "$commands" -- $1) )
 }
 
@@ -86,14 +86,17 @@ _ds_cmd_init() {
 }
 
 _ds_cmd_inject() {
-    local scripts="apache2 get-ssl-cert mysql phpmyadmin set_prompt ssmtp"
+    local scripts=''
+    for dir in \
+        /usr/lib/ds \
+        $(_ds_app_dir) \
+        ${DSDIR:-$HOME/.ds} \
+        $(_ds_container_dir)
+    do
+        [[ -d $dir/scripts/ ]] && scripts+=" $(ls $dir/scripts/)"
+    done
 
-    local list=""
-    local dir=$(_ds_app_dir)/scripts/
-    [[ -d $dir ]] && list=$(ls $dir)
-    scripts+=" ${list//.sh/}"
-
-    COMPREPLY=( $(compgen -W "$cripts" -- $1) )
+    COMPREPLY=( $(compgen -W "$scripts" -- $1) )
 }
 
 _ds_custom_completion() {
