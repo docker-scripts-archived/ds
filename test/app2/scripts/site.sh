@@ -4,13 +4,13 @@ source /host/settings.sh
 
 case $1 in
     enable)
-        a2ensite $IMAGE
+        a2ensite default
         a2dissite 000-default
         service apache2 restart
         ;;
     disable)
         a2ensite 000-default
-        a2dissite $IMAGE
+        a2dissite default
         service apache2 restart
         ;;
     *)

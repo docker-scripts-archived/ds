@@ -16,21 +16,21 @@ test_case 'ds @test2 start,stop,restart (overriden commands)' '
 '
 
 test_case 'ds @test2 config (run configuration scripts)' '
-    ds @test2 config | grep "Running configuration script"
+    ds @test2 config | grep "Running script"
 '
 
-test_case 'ds @test2 runcfg test1 (config script "test1")' '
+test_case 'ds @test2 inject test1.sh (config script "test1")' '
     ds @test2 exec rm -f /etc/test1.sh &&
-    ds @test2 runcfg test1 &&
+    ds @test2 inject test1.sh &&
     ds @test2 exec cat /etc/test1.sh | grep CONTAINER
 '
 
-test_case 'ds @test2 runcfg site [enable|disable] (config script "site")' '
-    ds @test2 runcfg site | grep "Usage" &&
-    ds @test2 runcfg site disable &&
-    ds @test2 exec test ! -f /etc/apache2/sites-enabled/$IMAGE.conf &&
-    ds @test2 runcfg site enable &&
-    ds @test2 exec test ! -f /etc/apache2/sites-enabled/$IMAGE.conf
+test_case 'ds @test2 inject site.sh [enable|disable] (config script "site")' '
+    ds @test2 inject site.sh | grep "Usage" &&
+    ds @test2 inject site.sh disable &&
+    ds @test2 exec test ! -f /etc/apache2/sites-enabled/default.conf &&
+    ds @test2 inject site.sh enable &&
+    ds @test2 exec test -f /etc/apache2/sites-enabled/default.conf
 '
 
 test_case 'ds @test2 apache2 [start|stop] (new command apache2)' '
