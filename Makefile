@@ -34,15 +34,11 @@ man: man/ds.1 man/ds.1.html
 man/ds.1 man/ds.1.html: man/ds.1.ronn
 	@man/make.sh
 
-TESTS = $(sort $(wildcard tests/t*.t))
-
-test: $(TESTS)
-
-$(TESTS):
-	@$@ $(DS_TEST_OPTS)
+test:
+	cd test/ && ds test
 
 clean:
 	$(RM) -rf tests/test-results/ tests/trash\ directory.*/
 	$(RM) -f man/ds.1 man/ds.1.html
 
-.PHONY: install uninstall test clean $(TESTS)
+.PHONY: install uninstall test clean
