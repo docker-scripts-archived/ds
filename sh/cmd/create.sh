@@ -60,6 +60,7 @@ _mount_letsencrypt_dirs() {
     local certdir="$CONTAINERS/$wsproxy/letsencrypt"
     [[ ${wsproxy:0:1} == '/' ]] && certdir="$wsproxy/letsencrypt"
 
+    mkdir -p $certdir/archive $certdir/live
     local mount_dirs=''
     mount_dirs+=" --mount type=bind,src=$certdir/archive,dst=/etc/letsencrypt/archive,readonly"
     mount_dirs+=" --mount type=bind,src=$certdir/live,dst=/etc/letsencrypt/live,readonly"
