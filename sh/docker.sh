@@ -89,6 +89,7 @@ _EOF
     GITHUB=${GITHUB:-https://github.com/docker-scripts}
     APPS=${APPS:-/opt/docker-scripts}
     CONTAINERS=${CONTAINERS:-/var/ds}
+    NETWORK=${NETWORK:-dsnet}
     mkdir -p $APPS $CONTAINERS
 }
 
