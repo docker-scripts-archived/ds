@@ -3,11 +3,7 @@
 source /host/settings.sh
 DOMAIN=${DOMAIN:-$IMAGE.example.org}
 
-### fix /etc/fstab
-sed -i /etc/fstab -e '#/var/log/apache2#d'
-cat <<EOF >> /etc/fstab
-tmpfs /var/log/apache2 tmpfs defaults,noatime 0 0
-EOF
+mkdir -p /var/log/apache2
 
 ### create a configuration file
 mkdir -p /var/www/default
