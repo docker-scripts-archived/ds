@@ -154,8 +154,10 @@ main() {
     source "$LIBDIR/auxiliary.sh"
 
     # check the docker version
-    local version=$(docker --version | cut -d, -f1 | cut -d' ' -f3 | cut -d. -f1)
-    [[ "$version" -lt 17 ]] && fail "These scripts are supposed to work with docker 17+"
+    if [[ "$1" != 'run' ]]; then
+        local version=$(docker --version | cut -d, -f1 | cut -d' ' -f3 | cut -d. -f1)
+        [[ "$version" -lt 17 ]] && fail "These scripts are supposed to work with docker 17+"
+    fi
 
     # if the command is 'cd', go to the directory of the given container
     # it must be called by sourcing, like this: `. ds cd @container`
