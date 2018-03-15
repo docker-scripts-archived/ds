@@ -208,9 +208,6 @@ main() {
             log call cmd_$command "$@"
             cmd_restart && sleep 2
             ;;
-        run)
-            log call cmd_$command "$@"
-            ;;
         *)
             call cmd_$command "$@"
             ;;
