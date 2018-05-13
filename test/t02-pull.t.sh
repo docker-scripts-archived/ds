@@ -7,7 +7,7 @@ test_case 'ds pull (cloning)' '
 '
 
 test_case 'ds pull (up to date)' '
-    ds pull ds 2>&1 | grep "Already up-to-date."
+    ds pull ds 2>&1 | grep "Already up to date."
 '
 
 test_case 'ds pull (with branch)' '
