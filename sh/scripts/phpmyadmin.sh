@@ -2,7 +2,7 @@
 ### install phpmyadmin
 
 DEBIAN_FRONTEND=noninteractive \
-    apt-get -y install phpmyadmin
+    apt -y install phpmyadmin
 
 if [[ -n $DEV ]]; then
     ### make login expiration time longer
