@@ -4,9 +4,7 @@ cmd_init_help() {
         Initialize a container directory by getting the file 'settings.sh'
         from the given app directory.
 
-        The argument <app> can be a subdirectory of '$APPS', or any other
-        directory, absolute or relative, that can be reached from the
-        container's directory.
+        The argument <app> can be any subdirectory of '$APPS'.
 
         If the second argument is missing, the current directory will be used
         for initializing the container. If <container> starts with './'
