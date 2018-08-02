@@ -30,6 +30,7 @@ DockerScripts
 
 ## INSTALLATION
 
+    apt install m4
     git clone https://github.com/docker-scripts/ds /opt/docker-scripts/ds
     cd /opt/docker-scripts/ds/
     make install
