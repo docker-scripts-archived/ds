@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-### Fix a warning message from logrotate and rsyslog
-### See: https://github.com/ouvrages/rsyslog/commit/ad4cc8949c9caa1e3c95389238f0b637a5325fa2
-sed -i /etc/logrotate.d/rsyslog \
-    -e 's/invoke-rc.d rsyslog rotate/invoke-rc.d --quiet rsyslog rotate/'
+### Fix an error message from rsyslog
+### See: https://github.com/rsyslog/rsyslog-pkg-ubuntu/issues/74
+sed -i /usr/lib/rsyslog/rsyslog-rotate \
+    -e 's/systemctl kill -s HUP rsyslog.service/systemctl restart rsyslog.service/'

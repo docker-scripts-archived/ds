@@ -10,3 +10,5 @@ STOPSIGNAL SIGRTMIN+3
 
 CMD ["/sbin/init"]
 WORKDIR /host
+
+RUN apt -y install locales rsyslog logrotate cron logwatch ssmtp vim
