@@ -23,8 +23,6 @@ cmd_create() {
     # create a new container
     docker create --name=$CONTAINER --hostname=$CONTAINER \
         --restart=unless-stopped \
-        --cap-add SYS_ADMIN \
-        --security-opt apparmor:unconfined \
         --mount type=tmpfs,destination=/run \
         --mount type=tmpfs,destination=/run/lock \
         --mount type=bind,src=/sys/fs/cgroup,dst=/sys/fs/cgroup,readonly \
