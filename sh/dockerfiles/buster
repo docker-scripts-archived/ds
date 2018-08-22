@@ -7,8 +7,10 @@ RUN apt update && apt -y upgrade
 RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 RUN apt -y install systemd resolvconf
 RUN systemctl set-default multi-user.target
-RUN ln -s /lib/systemd/systemd /sbin/init
+
 CMD ["/sbin/init"]
+WORKDIR /host
 
 ### install some other packages
-RUN apt install --yes locales rsyslog logrotate cron logwatch ssmtp vim
+#RUN apt install --yes locales rsyslog logrotate cron logwatch ssmtp vim
+RUN apt install --yes locales rsyslog logrotate cron logwatch vim
