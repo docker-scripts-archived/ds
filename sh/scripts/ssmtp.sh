@@ -2,10 +2,8 @@
 
 source /host/settings.sh
 
-[[ -z $GMAIL_ADDRESS ]] && exit 0
-
-### modify ssmtp config files
-cat <<-_EOF > /etc/ssmtp/ssmtp.conf
+if [[ -n $GMAIL_ADDRESS ]]; then
+    cat <<-_EOF > /etc/ssmtp/ssmtp.conf
 root=$GMAIL_ADDRESS
 mailhub=smtp.gmail.com:587
 AuthUser=$GMAIL_ADDRESS
@@ -16,6 +14,14 @@ rewriteDomain=gmail.com
 hostname=localhost
 FromLineOverride=YES
 _EOF
-cat <<-_EOF > /etc/ssmtp/revaliases
+    cat <<-_EOF > /etc/ssmtp/revaliases
 root:$GMAIL_ADDRESS:smtp.gmail.com:587
 _EOF
+elif [[ -n $SMTP_SERVER ]]; then
+    cat <<-_EOF > /etc/ssmtp/ssmtp.conf
+mailhub=$SMTP_SERVER
+rewriteDomain=${SMTP_DOMAIN:-$DOMAIN}
+UseSTARTTLS=YES
+FromLineOverride=YES
+_EOF
+fi
