@@ -27,7 +27,9 @@ cmd_inject() {
     cp $scrfile tmp/
     echo -e "\n--> Running script '$scrfile'"
     cmd_exec "/host/tmp/$(basename $scrfile)" "$@"
+    err=$?
     rm -rf tmp/
+    [[ $err == 0 ]] || exit $err
 }
 
 _print_script_list() {
